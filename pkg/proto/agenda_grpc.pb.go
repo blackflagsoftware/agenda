@@ -3005,3 +3005,233 @@ var RoleUserService_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "pkg/proto/agenda.proto",
 }
+
+// MembersServiceClient is the client API for MembersService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type MembersServiceClient interface {
+	GetMember(ctx context.Context, in *MemberIDIn, opts ...grpc.CallOption) (*MemberResponse, error)
+	SearchMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*MemberRepeatResponse, error)
+	PostMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*MemberResponse, error)
+	PatchMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*Result, error)
+	DeleteMember(ctx context.Context, in *MemberIDIn, opts ...grpc.CallOption) (*Result, error)
+}
+
+type membersServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewMembersServiceClient(cc grpc.ClientConnInterface) MembersServiceClient {
+	return &membersServiceClient{cc}
+}
+
+func (c *membersServiceClient) GetMember(ctx context.Context, in *MemberIDIn, opts ...grpc.CallOption) (*MemberResponse, error) {
+	out := new(MemberResponse)
+	err := c.cc.Invoke(ctx, "/proto.MembersService/GetMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *membersServiceClient) SearchMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*MemberRepeatResponse, error) {
+	out := new(MemberRepeatResponse)
+	err := c.cc.Invoke(ctx, "/proto.MembersService/SearchMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *membersServiceClient) PostMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*MemberResponse, error) {
+	out := new(MemberResponse)
+	err := c.cc.Invoke(ctx, "/proto.MembersService/PostMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *membersServiceClient) PatchMember(ctx context.Context, in *Member, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/proto.MembersService/PatchMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *membersServiceClient) DeleteMember(ctx context.Context, in *MemberIDIn, opts ...grpc.CallOption) (*Result, error) {
+	out := new(Result)
+	err := c.cc.Invoke(ctx, "/proto.MembersService/DeleteMember", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// MembersServiceServer is the server API for MembersService service.
+// All implementations must embed UnimplementedMembersServiceServer
+// for forward compatibility
+type MembersServiceServer interface {
+	GetMember(context.Context, *MemberIDIn) (*MemberResponse, error)
+	SearchMember(context.Context, *Member) (*MemberRepeatResponse, error)
+	PostMember(context.Context, *Member) (*MemberResponse, error)
+	PatchMember(context.Context, *Member) (*Result, error)
+	DeleteMember(context.Context, *MemberIDIn) (*Result, error)
+	mustEmbedUnimplementedMembersServiceServer()
+}
+
+// UnimplementedMembersServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedMembersServiceServer struct {
+}
+
+func (UnimplementedMembersServiceServer) GetMember(context.Context, *MemberIDIn) (*MemberResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMember not implemented")
+}
+func (UnimplementedMembersServiceServer) SearchMember(context.Context, *Member) (*MemberRepeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchMember not implemented")
+}
+func (UnimplementedMembersServiceServer) PostMember(context.Context, *Member) (*MemberResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostMember not implemented")
+}
+func (UnimplementedMembersServiceServer) PatchMember(context.Context, *Member) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PatchMember not implemented")
+}
+func (UnimplementedMembersServiceServer) DeleteMember(context.Context, *MemberIDIn) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMember not implemented")
+}
+func (UnimplementedMembersServiceServer) mustEmbedUnimplementedMembersServiceServer() {}
+
+// UnsafeMembersServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to MembersServiceServer will
+// result in compilation errors.
+type UnsafeMembersServiceServer interface {
+	mustEmbedUnimplementedMembersServiceServer()
+}
+
+func RegisterMembersServiceServer(s grpc.ServiceRegistrar, srv MembersServiceServer) {
+	s.RegisterService(&MembersService_ServiceDesc, srv)
+}
+
+func _MembersService_GetMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MemberIDIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MembersServiceServer).GetMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.MembersService/GetMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MembersServiceServer).GetMember(ctx, req.(*MemberIDIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MembersService_SearchMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Member)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MembersServiceServer).SearchMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.MembersService/SearchMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MembersServiceServer).SearchMember(ctx, req.(*Member))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MembersService_PostMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Member)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MembersServiceServer).PostMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.MembersService/PostMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MembersServiceServer).PostMember(ctx, req.(*Member))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MembersService_PatchMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Member)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MembersServiceServer).PatchMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.MembersService/PatchMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MembersServiceServer).PatchMember(ctx, req.(*Member))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _MembersService_DeleteMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MemberIDIn)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MembersServiceServer).DeleteMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/proto.MembersService/DeleteMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MembersServiceServer).DeleteMember(ctx, req.(*MemberIDIn))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// MembersService_ServiceDesc is the grpc.ServiceDesc for MembersService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MembersService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.MembersService",
+	HandlerType: (*MembersServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetMember",
+			Handler:    _MembersService_GetMember_Handler,
+		},
+		{
+			MethodName: "SearchMember",
+			Handler:    _MembersService_SearchMember_Handler,
+		},
+		{
+			MethodName: "PostMember",
+			Handler:    _MembersService_PostMember_Handler,
+		},
+		{
+			MethodName: "PatchMember",
+			Handler:    _MembersService_PatchMember_Handler,
+		},
+		{
+			MethodName: "DeleteMember",
+			Handler:    _MembersService_DeleteMember_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "pkg/proto/agenda.proto",
+}

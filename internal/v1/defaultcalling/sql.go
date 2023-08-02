@@ -24,6 +24,12 @@ func (d *SQLDefaultCalling) Read(def *DefaultCalling) error {
 	sqlGet := `
 		SELECT
 			id,
+			bishop,
+			b_1st,
+			b_2nd,
+			s_pres,
+			s_1st,
+			s_2nd,
 			organist,
 			chorister,
 			newsletter,
@@ -40,6 +46,12 @@ func (d *SQLDefaultCalling) ReadAll(def *[]DefaultCalling, param DefaultCallingP
 	sqlSearch := fmt.Sprintf(`
 		SELECT
 			id,
+			bishop,
+			b_1st,
+			b_2nd,
+			s_pres,
+			s_1st,
+			s_2nd,
 			organist,
 			chorister,
 			newsletter,
@@ -68,12 +80,24 @@ func (d *SQLDefaultCalling) Create(def *DefaultCalling) error {
 	sqlPost := `
 		INSERT INTO default_calling (
 			id,
+			bishop,
+			b_1st,
+			b_2nd,
+			s_pres,
+			s_1st,
+			s_2nd,
 			organist,
 			chorister,
 			newsletter,
 			stake
 		) VALUES (
 			:id,
+			:bishop,
+			:b_1st,
+			:b_2nd,
+			:s_pres,
+			:s_1st,
+			:s_2nd,
 			:organist,
 			:chorister,
 			:newsletter,
@@ -90,6 +114,12 @@ func (d *SQLDefaultCalling) Create(def *DefaultCalling) error {
 func (d *SQLDefaultCalling) Update(def DefaultCalling) error {
 	sqlPatch := `
 		UPDATE default_calling SET
+			bishop = :bishop,
+			b_1st = :b_1st,
+			b_2nd = :b_2nd,
+			s_pres = :s_pres,
+			s_1st = :s_1st,
+			s_2nd = :s_2nd,
 			organist = :organist,
 			chorister = :chorister,
 			newsletter = :newsletter,

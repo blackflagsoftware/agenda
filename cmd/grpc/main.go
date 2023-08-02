@@ -11,6 +11,7 @@ import (
 	bis "github.com/blackflagsoftware/agenda/internal/v1/bishopbusiness"
 	def "github.com/blackflagsoftware/agenda/internal/v1/defaultcalling"
 	hym "github.com/blackflagsoftware/agenda/internal/v1/hymn"
+	mem "github.com/blackflagsoftware/agenda/internal/v1/member"
 	new "github.com/blackflagsoftware/agenda/internal/v1/newmember"
 	ord "github.com/blackflagsoftware/agenda/internal/v1/ordinance"
 	rol "github.com/blackflagsoftware/agenda/internal/v1/roles"
@@ -115,6 +116,11 @@ func main() {
 	mro := ro.NewManagerRoleUser(sro)
 	hro := ro.NewRoleUserGrpc(mro)
 	pb.RegisterRoleUserServiceServer(s, hro)
+	// Member
+	smem := mem.InitStorage()
+	mmem := mem.NewManagerMember(smem)
+	hmem := mem.NewMemberGrpc(mmem)
+	pb.RegisterMembersServiceServer(s, hmem)
 	// --- replace grpc text - do not remove ---
 
 	reflection.Register(s)

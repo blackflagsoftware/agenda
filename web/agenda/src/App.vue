@@ -7,6 +7,7 @@ import Prayers from './components/Prayers.vue'
 import Business from './components/Business.vue'
 import Program from './components/Program.vue'
 import Announcement from './components/Announcement.vue'
+import SpeakerTalk from './components/SpeakerTalk.vue'
 import axios from "axios"
 </script>
 
@@ -18,7 +19,8 @@ import axios from "axios"
     <div v-if="hideShowMainDiv" style="margin-left:20px;">
       <Date @capture-agenda="captureAgenda"/>
     </div> 
-      <div v-if="hideShowDetailDiv" style="margin-left:20px; margin-right:20px;">
+    <div v-if="hideShowDetailDiv" style="margin-left:20px; margin-right:20px;">
+        <h3 style="margin-left:20px; margin-top:20px;">Agenda/Program</h3>
         <v-expansion-panels>
           <v-expansion-panel title="Persons">
             <v-expansion-panel-text>
@@ -65,7 +67,17 @@ import axios from "axios"
             <v-btn @click="printAgenda()" style="margin-right:10px;" color="blue">Agenda Download</v-btn>
             <v-btn @click="publishProgram()" color="teal">Publish Program</v-btn>
         </div>
-      </div>
+    </div>
+    <div v-if="hideShowMainDiv" style="margin-left: 20px; margin-right:20px;">
+        <h3 style="margin-left:20px; margin-top:20px;">Speakers/Prayers</h3>
+        <v-expansion-panels>
+            <v-expansion-panel title="Speakers">
+                <v-expansion-panel-text>
+                    <SpeakerTalk />
+                </v-expansion-panel-text>
+            </v-expansion-panel>
+        </v-expansion-panels>
+    </div>
   </v-app>
 </template>
 
@@ -74,7 +86,7 @@ export default {
     name: "App",
     data() {
         return {
-            role: "admin",
+            role: "",
             date: "",
             agenda: undefined,
         }
@@ -92,9 +104,9 @@ export default {
             this.agenda = agenda;
         },
         refreshAgenda: function(obj) {
-            axios.patch(import.meta.env.VITA_API_URL + "/v1/agenda", obj)
+            axios.patch(import.meta.env.VITE_API_URL + "/v1/agenda", obj)
             .then(() => {
-                axios.get(import.meta.env.VITA_API_URL + "/v1/agenda/" + this.date)
+                axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/" + this.date)
                 .then(response => {
                     this.agenda = response.data.data
                     console.log(response);
@@ -107,9 +119,9 @@ export default {
             })
         },
         printAgenda: function() {
-            axios.get(import.meta.env.VITA_API_URL + "/v1/agenda/print/" + this.date)
+            axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/print/" + this.date)
             .then(() => {
-                axios.get(import.meta.env.VITA_API_URL + "/documents/"+this.date+"-agenda.pdf", {responseType: "arraybuffer"})
+                axios.get(import.meta.env.VITE_API_URL + "/documents/"+this.date+"-agenda.pdf", {responseType: "arraybuffer"})
                 .then(response => {
                     let blob = new Blob([response.data], {type:'application/pdf'});
                     let link = document.createElement('a');
@@ -126,9 +138,9 @@ export default {
             });
         },
         publishProgram: function() {
-            axios.get(import.meta.env.VITA_API_URL + "/v1/agenda/publish/" + this.date)
+            axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/publish/" + this.date)
             .then(() => {
-                axios.get(import.meta.env.VITA_API_URL + "/documents/"+this.date+"-program.pdf", {responseType: "arraybuffer"})
+                axios.get(import.meta.env.VITE_API_URL + "/documents/"+this.date+"-program.pdf", {responseType: "arraybuffer"})
                 .then(response => {
                     let blob = new Blob([response.data], {type:'application/pdf'});
                     let link = document.createElement('a');

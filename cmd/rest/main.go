@@ -15,6 +15,7 @@ import (
 	"github.com/blackflagsoftware/agenda/internal/v1/bishopbusiness"
 	"github.com/blackflagsoftware/agenda/internal/v1/defaultcalling"
 	"github.com/blackflagsoftware/agenda/internal/v1/hymn"
+	"github.com/blackflagsoftware/agenda/internal/v1/member"
 	"github.com/blackflagsoftware/agenda/internal/v1/newmember"
 	"github.com/blackflagsoftware/agenda/internal/v1/ordinance"
 	"github.com/blackflagsoftware/agenda/internal/v1/roles"
@@ -127,6 +128,7 @@ func InitializeRoutes(e *echo.Echo) {
 	defaultcalling.InitializeRest(routeGroup)
 	roles.InitializeRest(routeGroup)
 	roleuser.InitializeRest(routeGroup)
+	member.InitializeRest(routeGroup)
 	// --- replace server text - do not remove ---
 
 }

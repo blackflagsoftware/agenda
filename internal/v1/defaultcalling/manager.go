@@ -52,6 +52,36 @@ func (m *ManagerDefaultCalling) Patch(defIn DefaultCalling) error {
 		return errGet
 	}
 	existingValues := make(map[string]interface{})
+	// Bishop
+	if defIn.Bishop.Valid {
+		existingValues["bishop"] = def.Bishop.String
+		def.Bishop = defIn.Bishop
+	}
+	// B1st
+	if defIn.B1st.Valid {
+		existingValues["b_1st"] = def.B1st.String
+		def.B1st = defIn.B1st
+	}
+	// B2nd
+	if defIn.B2nd.Valid {
+		existingValues["b_2nd"] = def.B2nd.String
+		def.B2nd = defIn.B2nd
+	}
+	// SPres
+	if defIn.SPres.Valid {
+		existingValues["s_pres"] = def.SPres.String
+		def.SPres = defIn.SPres
+	}
+	// S1st
+	if defIn.S1st.Valid {
+		existingValues["s_1st"] = def.S1st.String
+		def.S1st = defIn.S1st
+	}
+	// S2nd
+	if defIn.S2nd.Valid {
+		existingValues["s_2nd"] = def.S2nd.String
+		def.S2nd = defIn.S2nd
+	}
 	// Organist
 	if defIn.Organist.Valid {
 		existingValues["organist"] = def.Organist.String

@@ -27,7 +27,7 @@ func (d *SQLAnnouncement) Read(ann *Announcement) error {
 			date,
 			message,
 			pulpit
-		FROM announcement WHERE id = $1`
+		FROM announcement`
 	if errDB := d.DB.Get(ann, sqlGet, ann.Id); errDB != nil {
 		return ae.DBError("Announcement Get: unable to get record.", errDB)
 	}
@@ -42,8 +42,8 @@ func (d *SQLAnnouncement) ReadAll(ann *[]Announcement, param AnnouncementParam) 
 			date,
 			message,
 			pulpit
-		FROM announcement
-		%s`, searchStmt)
+		FROM announcement`)
+	// %s`, searchStmt)
 	sqlSearch = d.DB.Rebind(sqlSearch)
 	if errDB := d.DB.Select(ann, sqlSearch, args...); errDB != nil {
 		return 0, ae.DBError("Announcement Search: unable to select records.", errDB)

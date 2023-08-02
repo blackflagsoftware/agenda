@@ -401,3 +401,37 @@ service RoleUserService {
 message RoleUserIDIn {
 	int64 Id = 1;
 }
+
+message Member {
+	int64 Id = 1;
+	string FirstName = 2;
+	string LastName = 3;
+	string Gender = 4;
+	string LastPrayed = 5;
+	string LastTalked = 6;
+	bool Active = 7;
+	bool NoPrayer = 8;
+	bool NoTalk = 9;
+}
+
+message MemberResponse {
+	Member Member = 1;
+	Result result = 2;
+}
+
+message MemberRepeatResponse {
+	repeated Member Member = 1;
+	Result result = 2;
+}
+
+service MembersService {
+	rpc GetMember(MemberIDIn) returns (MemberResponse);
+	rpc SearchMember(Member) returns (MemberRepeatResponse);
+	rpc PostMember(Member) returns (MemberResponse);
+	rpc PatchMember(Member) returns (Result);
+	rpc DeleteMember(MemberIDIn) returns (Result);
+}
+
+message MemberIDIn {
+	int64 Id = 1;
+}

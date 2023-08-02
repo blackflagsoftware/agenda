@@ -6,10 +6,10 @@ import axios from "axios"
 <template>
 	<v-row>
 		<v-col cols="12" md="3">
-			<v-text-field id="presiding-input" label="Presiding" variant="outlined" v-model="presiding" density="compact"></v-text-field>
+			<v-select id="presiding-input" label="Presiding" variant="outlined" v-model="presiding" density="compact" :items="pres_cond"></v-select>
 		</v-col>
 		<v-col cols="12" md="3">
-			<v-text-field id="conducting-input" label="Conducting" variant="outlined" v-model="conducting" density="compact"></v-text-field>
+			<v-select id="conducting-input" label="Conducting" variant="outlined" v-model="conducting" density="compact" :items="pres_cond"></v-select>
 		</v-col>
 		<v-col cols="12" md="3">
 			<v-text-field id="stake-input" label="Stake Rep" variant="outlined" v-model="stake" density="compact"></v-text-field>
@@ -48,7 +48,8 @@ export default {
 			organist: "",
 			chorister: "",
 			newsletter: "",
-			stake: ""
+			stake: "",
+			pres_cond: [],
 		}
 	},
 	props: ["agenda"],
@@ -59,10 +60,12 @@ export default {
 		getDefaultCallings: function() {
 			axios.get(import.meta.env.VITE_API_URL + "/v1/defaultcalling/1")
 			.then(response => {
-				if (this.organist === null) { this.organist = response.data.data.organist; }
-				if (this.chorister === null) { this.chorister = response.data.data.chorister; }
-				if (this.newsletter === null) { this.newsletter = response.data.data.newsletter; }
-				if (this.stake === null) { this.stake = response.data.data.stake; }
+				const callings = response.data.data;
+				if (this.organist === null) { this.organist = callings.organist; }
+				if (this.chorister === null) { this.chorister = callings.chorister; }
+				if (this.newsletter === null) { this.newsletter = callings.newsletter; }
+				if (this.stake === null) { this.stake = callings.stake; }
+				if (this.pres_cond.length === 0) { this.pres_cond.push(callings.bishop, callings.b_1st, callings.b_2nd, callings.s_pres, callings.s_1st, callings.s_2nd); }
 			})
 			.catch(error => {
 				console.log(error);
