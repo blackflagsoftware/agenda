@@ -1,0 +1,26 @@
+create table agenda (
+	date text,
+	presiding text,
+	conducting text,
+	organist text,
+	chorister text,
+	newsletter text
+	opening_hymn integer,
+	sacrament_hymn integer,
+	intermediate_hymn integer,
+	musical_number text,
+	closing_hymn integer,
+	invocation text,
+	benediction text,
+	ward_business boolean,
+	bishop_business boolean,
+	letter_read boolean,
+	stake_business boolean,
+	stake text,
+	new_members boolean,
+	ordinance boolean,
+	fast_sunday boolean,
+	agenda_published boolean,
+	program_published boolean,
+	primary key(date)
+);

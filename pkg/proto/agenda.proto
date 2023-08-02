@@ -1,0 +1,403 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./;protobuf";
+
+message IDIn {
+	int64 Id = 1;
+}
+
+message Result {
+	bool Success = 1;
+	string Error = 2;
+}
+
+message Agenda {
+	string Date = 1;
+	string Presiding = 2;
+	string Conducting = 3;
+	string Organist = 4;
+	string Chorister = 5;
+	string Newsletter = 6;
+	int64 IntermediateHymn = 7;
+	string MusicalNumber = 8;
+	int64 ClosingHymn = 9;
+	string Invocation = 10;
+	string Benediction = 11;
+	bool WardBusiness = 12;
+	bool BishopBusiness = 13;
+	bool LetterRead = 14;
+	bool StakeBusiness = 15;
+	string Stake = 16;
+	bool NewMembers = 17;
+	bool Ordinance = 18;
+	bool Fastsunday = 19;
+	bool AgendaPublished = 20;
+	bool ProgramPublished = 21;
+}
+
+message AgendaResponse {
+	Agenda Agenda = 1;
+	Result result = 2;
+}
+
+message AgendaRepeatResponse {
+	repeated Agenda Agenda = 1;
+	Result result = 2;
+}
+
+service AgendaService {
+	rpc GetAgenda(AgendaIDIn) returns (AgendaResponse);
+	rpc SearchAgenda(Agenda) returns (AgendaRepeatResponse);
+	rpc PostAgenda(Agenda) returns (AgendaResponse);
+	rpc PatchAgenda(Agenda) returns (Result);
+	rpc DeleteAgenda(AgendaIDIn) returns (Result);
+}
+
+message AgendaIDIn {
+	string Date = 1;
+}
+
+message Visitor {
+	int64 Id = 1;
+	string Date = 2;
+	string Name = 3;
+}
+
+message VisitorResponse {
+	Visitor Visitor = 1;
+	Result result = 2;
+}
+
+message VisitorRepeatResponse {
+	repeated Visitor Visitor = 1;
+	Result result = 2;
+}
+
+service VisitorService {
+	rpc GetVisitor(VisitorIDIn) returns (VisitorResponse);
+	rpc SearchVisitor(Visitor) returns (VisitorRepeatResponse);
+	rpc PostVisitor(Visitor) returns (VisitorResponse);
+	rpc PatchVisitor(Visitor) returns (Result);
+	rpc DeleteVisitor(VisitorIDIn) returns (Result);
+}
+
+message VisitorIDIn {
+	int64 Id = 1;
+}
+
+message WardBusinessRel {
+	int64 Id = 1;
+	string Date = 2;
+	string Name = 3;
+	string Calling = 4;
+}
+
+message WardBusinessRelResponse {
+	WardBusinessRel WardBusinessRel = 1;
+	Result result = 2;
+}
+
+message WardBusinessRelRepeatResponse {
+	repeated WardBusinessRel WardBusinessRel = 1;
+	Result result = 2;
+}
+
+service WardBusinessRelService {
+	rpc GetWardBusinessRel(WardBusinessRelIDIn) returns (WardBusinessRelResponse);
+	rpc SearchWardBusinessRel(WardBusinessRel) returns (WardBusinessRelRepeatResponse);
+	rpc PostWardBusinessRel(WardBusinessRel) returns (WardBusinessRelResponse);
+	rpc PatchWardBusinessRel(WardBusinessRel) returns (Result);
+	rpc DeleteWardBusinessRel(WardBusinessRelIDIn) returns (Result);
+}
+
+message WardBusinessRelIDIn {
+	int64 Id = 1;
+}
+
+message WardBusinessSus {
+	int64 Id = 1;
+	string Date = 2;
+	string Name = 3;
+	string Calling = 4;
+}
+
+message WardBusinessSusResponse {
+	WardBusinessSus WardBusinessSus = 1;
+	Result result = 2;
+}
+
+message WardBusinessSusRepeatResponse {
+	repeated WardBusinessSus WardBusinessSus = 1;
+	Result result = 2;
+}
+
+service WardBusinessSusService {
+	rpc GetWardBusinessSus(WardBusinessSusIDIn) returns (WardBusinessSusResponse);
+	rpc SearchWardBusinessSus(WardBusinessSus) returns (WardBusinessSusRepeatResponse);
+	rpc PostWardBusinessSus(WardBusinessSus) returns (WardBusinessSusResponse);
+	rpc PatchWardBusinessSus(WardBusinessSus) returns (Result);
+	rpc DeleteWardBusinessSus(WardBusinessSusIDIn) returns (Result);
+}
+
+message WardBusinessSusIDIn {
+	int64 Id = 1;
+}
+
+message BishopBusiness {
+	int64 Id = 1;
+	string Date = 2;
+	string Message = 3;
+}
+
+message BishopBusinessResponse {
+	BishopBusiness BishopBusiness = 1;
+	Result result = 2;
+}
+
+message BishopBusinessRepeatResponse {
+	repeated BishopBusiness BishopBusiness = 1;
+	Result result = 2;
+}
+
+service BishopBusinessService {
+	rpc GetBishopBusiness(BishopBusinessIDIn) returns (BishopBusinessResponse);
+	rpc SearchBishopBusiness(BishopBusiness) returns (BishopBusinessRepeatResponse);
+	rpc PostBishopBusiness(BishopBusiness) returns (BishopBusinessResponse);
+	rpc PatchBishopBusiness(BishopBusiness) returns (Result);
+	rpc DeleteBishopBusiness(BishopBusinessIDIn) returns (Result);
+}
+
+message BishopBusinessIDIn {
+	int64 Id = 1;
+}
+
+message NewMember {
+	int64 Id = 1;
+	string Date = 2;
+	string FamilyName = 3;
+	string Names = 4;
+}
+
+message NewMemberResponse {
+	NewMember NewMember = 1;
+	Result result = 2;
+}
+
+message NewMemberRepeatResponse {
+	repeated NewMember NewMember = 1;
+	Result result = 2;
+}
+
+service NewMemberService {
+	rpc GetNewMember(NewMemberIDIn) returns (NewMemberResponse);
+	rpc SearchNewMember(NewMember) returns (NewMemberRepeatResponse);
+	rpc PostNewMember(NewMember) returns (NewMemberResponse);
+	rpc PatchNewMember(NewMember) returns (Result);
+	rpc DeleteNewMember(NewMemberIDIn) returns (Result);
+}
+
+message NewMemberIDIn {
+	int64 Id = 1;
+}
+
+message Ordinance {
+	int64 Id = 1;
+	string Date = 2;
+	string Confirmations = 3;
+	string Blessings = 4;
+}
+
+message OrdinanceResponse {
+	Ordinance Ordinance = 1;
+	Result result = 2;
+}
+
+message OrdinanceRepeatResponse {
+	repeated Ordinance Ordinance = 1;
+	Result result = 2;
+}
+
+service OrdinanceService {
+	rpc GetOrdinance(OrdinanceIDIn) returns (OrdinanceResponse);
+	rpc SearchOrdinance(Ordinance) returns (OrdinanceRepeatResponse);
+	rpc PostOrdinance(Ordinance) returns (OrdinanceResponse);
+	rpc PatchOrdinance(Ordinance) returns (Result);
+	rpc DeleteOrdinance(OrdinanceIDIn) returns (Result);
+}
+
+message OrdinanceIDIn {
+	int64 Id = 1;
+}
+
+message Speaker {
+	int64 Id = 1;
+	string Date = 2;
+	string Position = 3;
+	string Name = 4;
+}
+
+message SpeakerResponse {
+	Speaker Speaker = 1;
+	Result result = 2;
+}
+
+message SpeakerRepeatResponse {
+	repeated Speaker Speaker = 1;
+	Result result = 2;
+}
+
+service SpeakerService {
+	rpc GetSpeaker(SpeakerIDIn) returns (SpeakerResponse);
+	rpc SearchSpeaker(Speaker) returns (SpeakerRepeatResponse);
+	rpc PostSpeaker(Speaker) returns (SpeakerResponse);
+	rpc PatchSpeaker(Speaker) returns (Result);
+	rpc DeleteSpeaker(SpeakerIDIn) returns (Result);
+}
+
+message SpeakerIDIn {
+	int64 Id = 1;
+}
+
+message Announcement {
+	int64 Id = 1;
+	string Date = 2;
+	string Message = 3;
+	bool Pulpit = 4;
+}
+
+message AnnouncementResponse {
+	Announcement Announcement = 1;
+	Result result = 2;
+}
+
+message AnnouncementRepeatResponse {
+	repeated Announcement Announcement = 1;
+	Result result = 2;
+}
+
+service AnnouncementService {
+	rpc GetAnnouncement(AnnouncementIDIn) returns (AnnouncementResponse);
+	rpc SearchAnnouncement(Announcement) returns (AnnouncementRepeatResponse);
+	rpc PostAnnouncement(Announcement) returns (AnnouncementResponse);
+	rpc PatchAnnouncement(Announcement) returns (Result);
+	rpc DeleteAnnouncement(AnnouncementIDIn) returns (Result);
+}
+
+message AnnouncementIDIn {
+	int64 Id = 1;
+}
+
+message Hymn {
+	int64 Id = 1;
+	string Name = 2;
+}
+
+message HymnResponse {
+	Hymn Hymn = 1;
+	Result result = 2;
+}
+
+message HymnRepeatResponse {
+	repeated Hymn Hymn = 1;
+	Result result = 2;
+}
+
+service HymnService {
+	rpc GetHymn(HymnIDIn) returns (HymnResponse);
+	rpc SearchHymn(Hymn) returns (HymnRepeatResponse);
+	rpc PostHymn(Hymn) returns (HymnResponse);
+	rpc PatchHymn(Hymn) returns (Result);
+	rpc DeleteHymn(HymnIDIn) returns (Result);
+}
+
+message HymnIDIn {
+	int64 Id = 1;
+}
+
+message DefaultCalling {
+	int64 Id = 1;
+	string Organist = 2;
+	string Chorister = 3;
+	string Newsletter = 4;
+	string Stake = 5;
+}
+
+message DefaultCallingResponse {
+	DefaultCalling DefaultCalling = 1;
+	Result result = 2;
+}
+
+message DefaultCallingRepeatResponse {
+	repeated DefaultCalling DefaultCalling = 1;
+	Result result = 2;
+}
+
+service DefaultCallingService {
+	rpc GetDefaultCalling(DefaultCallingIDIn) returns (DefaultCallingResponse);
+	rpc SearchDefaultCalling(DefaultCalling) returns (DefaultCallingRepeatResponse);
+	rpc PostDefaultCalling(DefaultCalling) returns (DefaultCallingResponse);
+	rpc PatchDefaultCalling(DefaultCalling) returns (Result);
+	rpc DeleteDefaultCalling(DefaultCallingIDIn) returns (Result);
+}
+
+message DefaultCallingIDIn {
+	int64 Id = 1;
+}
+
+message Roles {
+	int64 Id = 1;
+	string Name = 2;
+}
+
+message RolesResponse {
+	Roles Roles = 1;
+	Result result = 2;
+}
+
+message RolesRepeatResponse {
+	repeated Roles Roles = 1;
+	Result result = 2;
+}
+
+service RolesService {
+	rpc GetRoles(RolesIDIn) returns (RolesResponse);
+	rpc SearchRoles(Roles) returns (RolesRepeatResponse);
+	rpc PostRoles(Roles) returns (RolesResponse);
+	rpc PatchRoles(Roles) returns (Result);
+	rpc DeleteRoles(RolesIDIn) returns (Result);
+}
+
+message RolesIDIn {
+	int64 Id = 1;
+}
+
+message RoleUser {
+	int64 Id = 1;
+	int64 RoleId = 2;
+	string Name = 3;
+	string Pwd = 4;
+}
+
+message RoleUserResponse {
+	RoleUser RoleUser = 1;
+	Result result = 2;
+}
+
+message RoleUserRepeatResponse {
+	repeated RoleUser RoleUser = 1;
+	Result result = 2;
+}
+
+service RoleUserService {
+	rpc GetRoleUser(RoleUserIDIn) returns (RoleUserResponse);
+	rpc SearchRoleUser(RoleUser) returns (RoleUserRepeatResponse);
+	rpc PostRoleUser(RoleUser) returns (RoleUserResponse);
+	rpc PatchRoleUser(RoleUser) returns (Result);
+	rpc DeleteRoleUser(RoleUserIDIn) returns (Result);
+}
+
+message RoleUserIDIn {
+	int64 Id = 1;
+}

@@ -1,0 +1,33 @@
+{
+    "message": "This is used for forge program for convenience",
+    "app_name": "agenda",
+    "full_path": "/Users/ericsmith/Programming/src/github.com/blackflagsoftware/agenda",
+    "sub_dir": "internal/v1",
+    "sub_package": "v1",
+    "project_path": "github.com/blackflagsoftware/agenda",
+    "storage": "s",
+    "sql_storage": "s",
+    "project_path_encoded": "github.com\\/blackflagsoftware\\/agenda",
+    "sub_dir_encoded": "internal\\/v1",
+    "dynamic_schema": false,
+    "schema": "",
+    "dynamic_schema_postfix": "",
+    "use_orm": false,
+    "tag_format": "snakeCase",
+    "known_aliases": [
+        "age",
+        "vis",
+        "war",
+        "wa",
+        "bis",
+        "new",
+        "ord",
+        "spe",
+        "ann",
+        "hym",
+        "def",
+        "rol",
+        "ro"
+    ],
+    "version_path": "v1"
+}

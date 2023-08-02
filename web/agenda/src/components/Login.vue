@@ -1,0 +1,57 @@
+<script setup>
+import { ref } from 'vue';
+import axios from "axios"
+</script>
+
+<template>
+	<v-form>
+		<v-row>
+			<v-col cols="12" md="2">
+				<v-text-field id="user-input" label="User" variant="outlined" v-model="user" density="compact"></v-text-field>
+			</v-col>
+			<v-col cols="12" md="2">
+				<v-text-field id="pwd-input" type="password" label="Password" variant="outlined" v-model="pwd" density="compact"></v-text-field>
+			</v-col>
+			<v-col cols="12" md="2">
+				<v-btn @click="login" :disabled="disableLoginBtn" color="blue">Login</v-btn>
+			</v-col>
+			<v-col cols="12" md="2">
+				<v-alert v-if="error" type="error" text="Login Failed!"></v-alert>
+			</v-col>
+		</v-row>
+	</v-form>
+</template>
+
+<script>
+export default {
+	name: "Login",
+	data() {
+		return {
+			user: "",
+			pwd: "",
+			error: ref(false),
+		}
+	},
+	methods: {
+		login: function() {
+			this.error = false;
+			axios.get(import.meta.env.VITE_API_URL + "/v1/roleuser/login/" + this.user + "/pwd/" + this.pwd)
+			.then(response => {
+				this.$emit("captureRole", response.data.data.role)
+				sessionStorage.setItem("role", response.data.data.role);
+				this.user = "";
+				this.pwd = "";
+			})
+			.catch(error => {
+				console.log(error);
+				this.error = true;
+			})
+		}
+	},
+	computed: {
+		disableLoginBtn() {
+			return (this.user === "" || this.pwd === "") ? true : false;
+		}
+	}
+}
+</script>
