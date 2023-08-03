@@ -1,0 +1,3 @@
+AGENDA_SQLITE_PATH=/app/data/agenda.sql
+AGENDA_DOCUMENT_DIR=/app/web
+AGENDA_MIGRATION_PATH=/app/migrations

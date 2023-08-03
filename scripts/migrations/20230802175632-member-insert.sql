@@ -238,4 +238,4 @@ insert into member (id, first_name, last_name, gender, last_prayed, last_talked,
 (237, 'Janet', 'Witherspoon', 'Female', '0001-01-01', '2001-01-01', false, true, true),
 (238, 'Michele Christine', 'Wright', 'Female', '2022-06-26', '2017-11-26', true, false, false),
 (239, 'Marion', 'Wright', 'Female', '0001-01-01', '0001-01-01', false, false, false),
-(240, 'Kristi Lee', 'Zingleman', 'Female', '2022-12-25', '2001-01-01', false, false, true),
+(240, 'Kristi Lee', 'Zingleman', 'Female', '2022-12-25', '2001-01-01', false, false, true);
