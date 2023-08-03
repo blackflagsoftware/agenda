@@ -78,11 +78,9 @@ func main() {
 		prom.Use(e)
 	}
 
-	// set all non-endpoints here
-	e.GET("/", Index)
 	e.HEAD("/status", ServerStatus) // for traditional server check
 	e.GET("/liveness", Liveness)    // for k8s liveness
-	e.Static("/documents", config.DocumentDir)
+	e.Static("/", config.DocumentDir)
 
 	InitializeRoutes(e)
 
