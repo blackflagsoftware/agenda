@@ -17,7 +17,6 @@ type (
 		Post(*Member) error
 		Patch(Member) error
 		Delete(*Member) error
-		Splice() error
 	}
 
 	RestMember struct {
@@ -38,11 +37,10 @@ func NewRestMember(mmem ManagerMemberAdapter) *RestMember {
 
 func (h *RestMember) LoadMemberRoutes(eg *echo.Group) {
 	eg.GET("/member/:id", h.Get)
-	eg.GET("/member", h.Search)
+	eg.POST("/member/search", h.Search)
 	eg.POST("/member", h.Post)
 	eg.PATCH("/member", h.Patch)
 	eg.DELETE("/member/:id", h.Delete)
-	eg.PUT("/member", h.Splice)
 }
 
 func (h *RestMember) Get(c echo.Context) error {
@@ -128,9 +126,4 @@ func (h *RestMember) Delete(c echo.Context) error {
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))
 	}
 	return c.NoContent(http.StatusOK)
-}
-
-func (h *RestMember) Splice(c echo.Context) error {
-	err := h.managerMember.Splice()
-	return c.String(http.StatusOK, err.Error())
 }

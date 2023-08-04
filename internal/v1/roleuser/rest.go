@@ -41,7 +41,7 @@ func NewRestRoleUser(mro ManagerRoleUserAdapter) *RestRoleUser {
 func (h *RestRoleUser) LoadRoleUserRoutes(eg *echo.Group) {
 	eg.GET("/roleuser/login/:user/pwd/:pwd", h.Login)
 	eg.GET("/roleuser/:id", h.Get)
-	eg.GET("/roleuser", h.Search)
+	eg.POST("/roleuser/search", h.Search)
 	eg.POST("/roleuser", h.Post)
 	eg.PATCH("/roleuser", h.Patch)
 	eg.DELETE("/roleuser/:id", h.Delete)
@@ -61,8 +61,13 @@ func (h *RestRoleUser) Login(c echo.Context) error {
 	return c.JSON(http.StatusOK, util.NewOutput(c, roleLogin, nil, nil))
 }
 func (h *RestRoleUser) Get(c echo.Context) error {
-
-	roleUser := &RoleUser{}
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		parse := ae.ParamError("id", err)
+		return c.JSON(http.StatusBadRequest, util.NewOutput(c, nil, &parse, nil))
+	}
+	roleUser := &RoleUser{Id: int(id)}
 	if err := h.managerRoleUser.Get(roleUser); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
@@ -122,7 +127,7 @@ func (h *RestRoleUser) Post(c echo.Context) error {
 
 func (h *RestRoleUser) Patch(c echo.Context) error {
 	ro := RoleUser{}
-	if err := c.Bind(ro); err != nil {
+	if err := c.Bind(&ro); err != nil {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, bindErr.BodyError(), &bindErr, nil))
 	}

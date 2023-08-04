@@ -1,4 +1,4 @@
-package roles
+package role
 
 import (
 	"github.com/blackflagsoftware/agenda/config"
@@ -7,20 +7,20 @@ import (
 )
 
 type (
-	Roles struct {
+	Role struct {
 		Id   int         `db:"id" json:"id"`
 		Name null.String `db:"name" json:"name"`
 	}
 
-	RolesParam struct {
+	RoleParam struct {
 		// TODO: add any other custom params here
 		util.Param
 	}
 )
 
-const RolesConst = "roles"
+const RoleConst = "role"
 
-func InitStorage() DataRolesAdapter {
+func InitStorage() DataRoleAdapter {
 	if config.StorageSQL {
 		return InitSQL()
 	}

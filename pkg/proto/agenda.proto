@@ -346,30 +346,30 @@ message DefaultCallingIDIn {
 	int64 Id = 1;
 }
 
-message Roles {
+message Role {
 	int64 Id = 1;
 	string Name = 2;
 }
 
-message RolesResponse {
-	Roles Roles = 1;
+message RoleResponse {
+	Role Role = 1;
 	Result result = 2;
 }
 
-message RolesRepeatResponse {
-	repeated Roles Roles = 1;
+message RoleRepeatResponse {
+	repeated Role Role = 1;
 	Result result = 2;
 }
 
-service RolesService {
-	rpc GetRoles(RolesIDIn) returns (RolesResponse);
-	rpc SearchRoles(Roles) returns (RolesRepeatResponse);
-	rpc PostRoles(Roles) returns (RolesResponse);
-	rpc PatchRoles(Roles) returns (Result);
-	rpc DeleteRoles(RolesIDIn) returns (Result);
+service RoleService {
+	rpc GetRole(RoleIDIn) returns (RoleResponse);
+	rpc SearchRole(Role) returns (RoleRepeatResponse);
+	rpc PostRole(Role) returns (RoleResponse);
+	rpc PatchRole(Role) returns (Result);
+	rpc DeleteRole(RoleIDIn) returns (Result);
 }
 
-message RolesIDIn {
+message RoleIDIn {
 	int64 Id = 1;
 }
 

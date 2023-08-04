@@ -58,8 +58,7 @@ func (d *SQLRoleUser) ReadAll(ro *[]RoleUser, param RoleUserParam) (int, error) 
 			name,
 			pwd
 		FROM role_user
-		%s
-		ORDER BY %s %s`, searchStmt, param.Sort, param.Limit)
+		%s`, searchStmt)
 	sqlSearch = d.DB.Rebind(sqlSearch)
 	if errDB := d.DB.Select(ro, sqlSearch, args...); errDB != nil {
 		return 0, ae.DBError("RoleUser Search: unable to select records.", errDB)
@@ -78,6 +77,11 @@ func (d *SQLRoleUser) ReadAll(ro *[]RoleUser, param RoleUserParam) (int, error) 
 }
 
 func (d *SQLRoleUser) Create(ro *RoleUser) error {
+	count, errCount := d.count()
+	if errCount != nil {
+		return errCount
+	}
+	ro.Id = count
 	sqlPost := `
 		INSERT INTO role_user (
 			id,
@@ -118,4 +122,12 @@ func (d *SQLRoleUser) Delete(ro *RoleUser) error {
 		return ae.DBError("RoleUser Delete: unable to delete record.", errDB)
 	}
 	return nil
+}
+
+func (d *SQLRoleUser) count() (int, error) {
+	count := 0
+	if errDB := d.DB.Get(&count, "SELECT COALESCE(MAX(id), 0) FROM role_user"); errDB != nil {
+		return 0, ae.DBError("RoleUser count: unable to get count.", errDB)
+	}
+	return count + 1, nil
 }

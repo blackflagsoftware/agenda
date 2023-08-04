@@ -1,4 +1,4 @@
-package roles
+package role
 
 import (
 	"net/http"
@@ -11,51 +11,56 @@ import (
 )
 
 type (
-	ManagerRolesAdapter interface {
-		Get(*Roles) error
-		Search(*[]Roles, RolesParam) (int, error)
-		Post(*Roles) error
-		Patch(Roles) error
-		Delete(*Roles) error
+	ManagerRoleAdapter interface {
+		Get(*Role) error
+		Search(*[]Role, RoleParam) (int, error)
+		Post(*Role) error
+		Patch(Role) error
+		Delete(*Role) error
 	}
 
-	RestRoles struct {
-		managerRoles ManagerRolesAdapter
+	RestRole struct {
+		managerRole ManagerRoleAdapter
 	}
 )
 
 func InitializeRest(eg *echo.Group) {
 	sl := InitStorage()
-	ml := NewManagerRoles(sl)
-	hl := NewRestRoles(ml)
-	hl.LoadRolesRoutes(eg)
+	ml := NewManagerRole(sl)
+	hl := NewRestRole(ml)
+	hl.LoadRoleRoutes(eg)
 }
 
-func NewRestRoles(mrol ManagerRolesAdapter) *RestRoles {
-	return &RestRoles{managerRoles: mrol}
+func NewRestRole(mrol ManagerRoleAdapter) *RestRole {
+	return &RestRole{managerRole: mrol}
 }
 
-func (h *RestRoles) LoadRolesRoutes(eg *echo.Group) {
-	eg.GET("/roles/:id", h.Get)
-	eg.GET("/roles", h.Search)
-	eg.POST("/roles", h.Post)
-	eg.PATCH("/roles", h.Patch)
-	eg.DELETE("/roles/:id", h.Delete)
+func (h *RestRole) LoadRoleRoutes(eg *echo.Group) {
+	eg.GET("/role/:id", h.Get)
+	eg.POST("/role/search", h.Search)
+	eg.POST("/role", h.Post)
+	eg.PATCH("/role", h.Patch)
+	eg.DELETE("/role/:id", h.Delete)
 }
 
-func (h *RestRoles) Get(c echo.Context) error {
-
-	roles := &Roles{}
-	if err := h.managerRoles.Get(roles); err != nil {
+func (h *RestRole) Get(c echo.Context) error {
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		parse := ae.ParamError("id", err)
+		return c.JSON(http.StatusBadRequest, util.NewOutput(c, nil, &parse, nil))
+	}
+	role := &Role{Id: int(id)}
+	if err := h.managerRole.Get(role); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))
 	}
-	return c.JSON(http.StatusOK, util.NewOutput(c, *roles, nil, nil))
+	return c.JSON(http.StatusOK, util.NewOutput(c, *role, nil, nil))
 }
 
-func (h *RestRoles) Search(c echo.Context) error {
-	param := RolesParam{}
+func (h *RestRole) Search(c echo.Context) error {
+	param := RoleParam{}
 	numberStr := c.QueryParam("page[number]")
 	if numberStr != "" {
 		var errNumber error
@@ -79,23 +84,23 @@ func (h *RestRoles) Search(c echo.Context) error {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, nil, &bindErr, nil))
 	}
-	roless := &[]Roles{}
-	totalCount, err := h.managerRoles.Search(roless, param)
+	roles := &[]Role{}
+	totalCount, err := h.managerRole.Search(roles, param)
 	if err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))
 	}
-	return c.JSON(http.StatusOK, util.NewOutput(c, *roless, nil, &totalCount))
+	return c.JSON(http.StatusOK, util.NewOutput(c, *roles, nil, &totalCount))
 }
 
-func (h *RestRoles) Post(c echo.Context) error {
-	rol := &Roles{}
+func (h *RestRole) Post(c echo.Context) error {
+	rol := &Role{}
 	if err := c.Bind(rol); err != nil {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, bindErr.BodyError(), &bindErr, nil))
 	}
-	if err := h.managerRoles.Post(rol); err != nil {
+	if err := h.managerRole.Post(rol); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))
@@ -103,13 +108,13 @@ func (h *RestRoles) Post(c echo.Context) error {
 	return c.JSON(http.StatusOK, util.NewOutput(c, *rol, nil, nil))
 }
 
-func (h *RestRoles) Patch(c echo.Context) error {
-	rol := Roles{}
+func (h *RestRole) Patch(c echo.Context) error {
+	rol := Role{}
 	if err := c.Bind(rol); err != nil {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, bindErr.BodyError(), &bindErr, nil))
 	}
-	if err := h.managerRoles.Patch(rol); err != nil {
+	if err := h.managerRole.Patch(rol); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))
@@ -117,10 +122,10 @@ func (h *RestRoles) Patch(c echo.Context) error {
 	return c.NoContent(http.StatusOK)
 }
 
-func (h *RestRoles) Delete(c echo.Context) error {
+func (h *RestRole) Delete(c echo.Context) error {
 
-	roles := &Roles{}
-	if err := h.managerRoles.Delete(roles); err != nil {
+	role := &Role{}
+	if err := h.managerRole.Delete(role); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()
 		return c.JSON(be.StatusCode, util.NewOutput(c, nil, &apiError, nil))

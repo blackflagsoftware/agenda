@@ -35,10 +35,10 @@ import axios from "axios"
 										<v-text-field v-model="editMember.active" label="Active"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.last_talked" label="Talked Last" ></v-text-field>
+										<v-text-field v-model="editMember.last_talked" label="Last Prayed" ></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.rntt" label="Request not to Talk"></v-text-field>
+										<v-text-field v-model="editMember.rntt" label="No Pray"></v-text-field>
 									</v-col>
 								</v-row>
 							</v-container>
@@ -65,11 +65,14 @@ export default {
 			speakerTalks: [],
 			headers: [
 				{ title: "id", align: "start", key: "id", sortable: false},
-				{ title: "Name", align: "start", key: "name" },
+				{ title: "First Name", align: "start", key: "first_name" },
+				{ title: "Last Name", align: "start", key: "last_name" },
 				{ title: "Gender", align: "start", key: "gender" },
 				{ title: "Active", align: "start", key: "active" },
-				{ title: "Talked Last", align: "start", key: "last_talked" },
-				{ title: "Request not to Talk", align: "start", key: "rntt" },
+				{ title: "Last Prayed", align: "start", key: "last_prayed" },
+				{ title: "No Pray", align: "start", key: "no_prayer" },
+				{ title: "Last Talked", align: "start", key: "last_talked" },
+				{ title: "No Talk", align: "start", key: "no_talk" },
 			],
 			editMember: {
 				name: "",
@@ -86,7 +89,7 @@ export default {
 	},
 	methods: {
 		getSpeakerTalk: function() {
-			axios.post(import.meta.env.VITE_API_URL + "/v1/speakertalk/search?sort=-last_talked")
+			axios.post(import.meta.env.VITE_API_URL + "/v1/member/search?sort=last_name")
 			.then(response => {
 				this.speakerTalks = response.data.data;
 			})

@@ -14,7 +14,7 @@ import (
 	mem "github.com/blackflagsoftware/agenda/internal/v1/member"
 	new "github.com/blackflagsoftware/agenda/internal/v1/newmember"
 	ord "github.com/blackflagsoftware/agenda/internal/v1/ordinance"
-	rol "github.com/blackflagsoftware/agenda/internal/v1/roles"
+	rol "github.com/blackflagsoftware/agenda/internal/v1/role"
 	ro "github.com/blackflagsoftware/agenda/internal/v1/roleuser"
 	spe "github.com/blackflagsoftware/agenda/internal/v1/speaker"
 	vis "github.com/blackflagsoftware/agenda/internal/v1/visitor"
@@ -106,11 +106,11 @@ func main() {
 	mdef := def.NewManagerDefaultCalling(sdef)
 	hdef := def.NewDefaultCallingGrpc(mdef)
 	pb.RegisterDefaultCallingServiceServer(s, hdef)
-	// Roles
+	// Role
 	srol := rol.InitStorage()
-	mrol := rol.NewManagerRoles(srol)
-	hrol := rol.NewRolesGrpc(mrol)
-	pb.RegisterRolesServiceServer(s, hrol)
+	mrol := rol.NewManagerRole(srol)
+	hrol := rol.NewRoleGrpc(mrol)
+	pb.RegisterRoleServiceServer(s, hrol)
 	// RoleUser
 	sro := ro.InitStorage()
 	mro := ro.NewManagerRoleUser(sro)

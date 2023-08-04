@@ -33,20 +33,3 @@ func InitStorage() DataMemberAdapter {
 	}
 	return nil
 }
-
-type (
-	SpeakerTalk struct {
-		Id         int         `db:"id" json:"id"`
-		Name       null.String `db:"name" json:"name"`
-		Gender     null.String `db:"gender" json:"gender"`
-		Rntt       null.Bool   `db:"rntt" json:"rntt"`
-		Active     null.Bool   `db:"active" json:"active"`
-		LastTalked null.String `db:"last_talked" json:"last_talked"`
-	}
-	Prayers struct {
-		Id             int         `db:"id" json:"id"`
-		Name           null.String `db:"name" json:"name"`
-		Rntp           null.Bool   `db:"rntp" json:"rntp"`
-		LastPrayedDate null.String `db:"last_prayed_date" json:"last_prayed_date"`
-	}
-)

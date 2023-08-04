@@ -12,7 +12,6 @@ type (
 		Create(*Member) error
 		Update(Member) error
 		Delete(*Member) error
-		Splice() error
 	}
 
 	ManagerMember struct {
@@ -107,8 +106,4 @@ func (m *ManagerMember) Delete(mem *Member) error {
 	}
 	go a.AuditDelete(m.auditWriter, *mem, MemberConst, a.KeysToString("Id", mem.Id))
 	return nil
-}
-
-func (m *ManagerMember) Splice() error {
-	return m.dataMember.Splice()
 }

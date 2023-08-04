@@ -2,8 +2,6 @@ package member
 
 import (
 	"fmt"
-	"os"
-	"strings"
 
 	ae "github.com/blackflagsoftware/agenda/internal/api_error"
 	stor "github.com/blackflagsoftware/agenda/internal/storage"
@@ -129,78 +127,5 @@ func (d *SQLMember) Delete(mem *Member) error {
 	if _, errDB := d.DB.Exec(sqlDelete, mem.Id); errDB != nil {
 		return ae.DBError("Member Delete: unable to delete record.", errDB)
 	}
-	return nil
-}
-
-func (d *SQLMember) Splice() error {
-	prayers := []Prayers{}
-	speakers := []SpeakerTalk{}
-	qryPrayer := "select * from prayer"
-	qrySpeaker := "select * from speaker_talk"
-
-	errPray := d.DB.Select(&prayers, qryPrayer)
-	if errPray != nil {
-		return errPray
-	}
-	errSpe := d.DB.Select(&speakers, qrySpeaker)
-	if errSpe != nil {
-		return errSpe
-	}
-	lines := []string{"insert into member (id, first_name, last_name, gender, last_prayed, last_talked, active, no_prayer, no_talk) values"}
-	for _, p := range prayers {
-		matchIdx := -1
-		for i, s := range speakers {
-			if p.Name.String == s.Name.String {
-				matchIdx = i
-				break
-			}
-			if strings.Contains(p.Name.String, s.Name.String) {
-				matchIdx = i
-				break
-			}
-		}
-		// create table member (
-		// 	id integer,
-		// 	first_name text,
-		// 	last_name text,
-		// 	gender text,
-		// 	last_prayed text,
-		// 	last_talked text,
-		// 	active boolean,
-		// 	no_prayer boolean,
-		// 	no_talk boolean,
-		// 	primary key(id)
-		// );
-
-		split := strings.Split(p.Name.String, ",")
-		fmt.Println("%+v\n", split)
-		last := strings.ReplaceAll(split[0], "'", "''")
-		first := strings.TrimSpace(strings.ReplaceAll(split[1], "'", "''"))
-		gender := "Female"
-		lastPrayed := "0001-01-01"
-		if p.LastPrayedDate.String != "2001-01-01" {
-			lastPrayed = p.LastPrayedDate.String
-		}
-		lastTalked := "0001-01-01"
-		active := false
-		noTalk := false
-		if matchIdx > -1 {
-			if speakers[matchIdx].Gender.String == "M" {
-				gender = "Male"
-			}
-			if speakers[matchIdx].LastTalked.String != "200-01-01" {
-				lastTalked = speakers[matchIdx].LastTalked.String
-			}
-			active = speakers[matchIdx].Active.Bool
-			noTalk = speakers[matchIdx].Rntt.Bool
-		}
-		line := fmt.Sprintf("(%d, '%s', '%s', '%s', '%s', '%s', %t, %t, %t),", p.Id, first, last, gender, lastPrayed, lastTalked, active, p.Rntp.Bool, noTalk)
-		lines = append(lines, line)
-	}
-	f, err := os.OpenFile("../../scripts/member-insert.sql", os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		return err
-	}
-	f.WriteString(strings.Join(lines, "\n"))
 	return nil
 }

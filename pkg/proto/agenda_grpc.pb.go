@@ -2546,230 +2546,230 @@ var DefaultCallingService_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "pkg/proto/agenda.proto",
 }
 
-// RolesServiceClient is the client API for RolesService service.
+// RoleServiceClient is the client API for RoleService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type RolesServiceClient interface {
-	GetRoles(ctx context.Context, in *RolesIDIn, opts ...grpc.CallOption) (*RolesResponse, error)
-	SearchRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*RolesRepeatResponse, error)
-	PostRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*RolesResponse, error)
-	PatchRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*Result, error)
-	DeleteRoles(ctx context.Context, in *RolesIDIn, opts ...grpc.CallOption) (*Result, error)
+type RoleServiceClient interface {
+	GetRole(ctx context.Context, in *RoleIDIn, opts ...grpc.CallOption) (*RoleResponse, error)
+	SearchRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*RoleRepeatResponse, error)
+	PostRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*RoleResponse, error)
+	PatchRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*Result, error)
+	DeleteRole(ctx context.Context, in *RoleIDIn, opts ...grpc.CallOption) (*Result, error)
 }
 
-type rolesServiceClient struct {
+type roleServiceClient struct {
 	cc grpc.ClientConnInterface
 }
 
-func NewRolesServiceClient(cc grpc.ClientConnInterface) RolesServiceClient {
-	return &rolesServiceClient{cc}
+func NewRoleServiceClient(cc grpc.ClientConnInterface) RoleServiceClient {
+	return &roleServiceClient{cc}
 }
 
-func (c *rolesServiceClient) GetRoles(ctx context.Context, in *RolesIDIn, opts ...grpc.CallOption) (*RolesResponse, error) {
-	out := new(RolesResponse)
-	err := c.cc.Invoke(ctx, "/proto.RolesService/GetRoles", in, out, opts...)
+func (c *roleServiceClient) GetRole(ctx context.Context, in *RoleIDIn, opts ...grpc.CallOption) (*RoleResponse, error) {
+	out := new(RoleResponse)
+	err := c.cc.Invoke(ctx, "/proto.RoleService/GetRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rolesServiceClient) SearchRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*RolesRepeatResponse, error) {
-	out := new(RolesRepeatResponse)
-	err := c.cc.Invoke(ctx, "/proto.RolesService/SearchRoles", in, out, opts...)
+func (c *roleServiceClient) SearchRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*RoleRepeatResponse, error) {
+	out := new(RoleRepeatResponse)
+	err := c.cc.Invoke(ctx, "/proto.RoleService/SearchRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rolesServiceClient) PostRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*RolesResponse, error) {
-	out := new(RolesResponse)
-	err := c.cc.Invoke(ctx, "/proto.RolesService/PostRoles", in, out, opts...)
+func (c *roleServiceClient) PostRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*RoleResponse, error) {
+	out := new(RoleResponse)
+	err := c.cc.Invoke(ctx, "/proto.RoleService/PostRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rolesServiceClient) PatchRoles(ctx context.Context, in *Roles, opts ...grpc.CallOption) (*Result, error) {
+func (c *roleServiceClient) PatchRole(ctx context.Context, in *Role, opts ...grpc.CallOption) (*Result, error) {
 	out := new(Result)
-	err := c.cc.Invoke(ctx, "/proto.RolesService/PatchRoles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.RoleService/PatchRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *rolesServiceClient) DeleteRoles(ctx context.Context, in *RolesIDIn, opts ...grpc.CallOption) (*Result, error) {
+func (c *roleServiceClient) DeleteRole(ctx context.Context, in *RoleIDIn, opts ...grpc.CallOption) (*Result, error) {
 	out := new(Result)
-	err := c.cc.Invoke(ctx, "/proto.RolesService/DeleteRoles", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/proto.RoleService/DeleteRole", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// RolesServiceServer is the server API for RolesService service.
-// All implementations must embed UnimplementedRolesServiceServer
+// RoleServiceServer is the server API for RoleService service.
+// All implementations must embed UnimplementedRoleServiceServer
 // for forward compatibility
-type RolesServiceServer interface {
-	GetRoles(context.Context, *RolesIDIn) (*RolesResponse, error)
-	SearchRoles(context.Context, *Roles) (*RolesRepeatResponse, error)
-	PostRoles(context.Context, *Roles) (*RolesResponse, error)
-	PatchRoles(context.Context, *Roles) (*Result, error)
-	DeleteRoles(context.Context, *RolesIDIn) (*Result, error)
-	mustEmbedUnimplementedRolesServiceServer()
+type RoleServiceServer interface {
+	GetRole(context.Context, *RoleIDIn) (*RoleResponse, error)
+	SearchRole(context.Context, *Role) (*RoleRepeatResponse, error)
+	PostRole(context.Context, *Role) (*RoleResponse, error)
+	PatchRole(context.Context, *Role) (*Result, error)
+	DeleteRole(context.Context, *RoleIDIn) (*Result, error)
+	mustEmbedUnimplementedRoleServiceServer()
 }
 
-// UnimplementedRolesServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedRolesServiceServer struct {
+// UnimplementedRoleServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedRoleServiceServer struct {
 }
 
-func (UnimplementedRolesServiceServer) GetRoles(context.Context, *RolesIDIn) (*RolesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetRoles not implemented")
+func (UnimplementedRoleServiceServer) GetRole(context.Context, *RoleIDIn) (*RoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRole not implemented")
 }
-func (UnimplementedRolesServiceServer) SearchRoles(context.Context, *Roles) (*RolesRepeatResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SearchRoles not implemented")
+func (UnimplementedRoleServiceServer) SearchRole(context.Context, *Role) (*RoleRepeatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchRole not implemented")
 }
-func (UnimplementedRolesServiceServer) PostRoles(context.Context, *Roles) (*RolesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PostRoles not implemented")
+func (UnimplementedRoleServiceServer) PostRole(context.Context, *Role) (*RoleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PostRole not implemented")
 }
-func (UnimplementedRolesServiceServer) PatchRoles(context.Context, *Roles) (*Result, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PatchRoles not implemented")
+func (UnimplementedRoleServiceServer) PatchRole(context.Context, *Role) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PatchRole not implemented")
 }
-func (UnimplementedRolesServiceServer) DeleteRoles(context.Context, *RolesIDIn) (*Result, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteRoles not implemented")
+func (UnimplementedRoleServiceServer) DeleteRole(context.Context, *RoleIDIn) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRole not implemented")
 }
-func (UnimplementedRolesServiceServer) mustEmbedUnimplementedRolesServiceServer() {}
+func (UnimplementedRoleServiceServer) mustEmbedUnimplementedRoleServiceServer() {}
 
-// UnsafeRolesServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to RolesServiceServer will
+// UnsafeRoleServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to RoleServiceServer will
 // result in compilation errors.
-type UnsafeRolesServiceServer interface {
-	mustEmbedUnimplementedRolesServiceServer()
+type UnsafeRoleServiceServer interface {
+	mustEmbedUnimplementedRoleServiceServer()
 }
 
-func RegisterRolesServiceServer(s grpc.ServiceRegistrar, srv RolesServiceServer) {
-	s.RegisterService(&RolesService_ServiceDesc, srv)
+func RegisterRoleServiceServer(s grpc.ServiceRegistrar, srv RoleServiceServer) {
+	s.RegisterService(&RoleService_ServiceDesc, srv)
 }
 
-func _RolesService_GetRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RolesIDIn)
+func _RoleService_GetRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleIDIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RolesServiceServer).GetRoles(ctx, in)
+		return srv.(RoleServiceServer).GetRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.RolesService/GetRoles",
+		FullMethod: "/proto.RoleService/GetRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RolesServiceServer).GetRoles(ctx, req.(*RolesIDIn))
+		return srv.(RoleServiceServer).GetRole(ctx, req.(*RoleIDIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RolesService_SearchRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Roles)
+func _RoleService_SearchRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Role)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RolesServiceServer).SearchRoles(ctx, in)
+		return srv.(RoleServiceServer).SearchRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.RolesService/SearchRoles",
+		FullMethod: "/proto.RoleService/SearchRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RolesServiceServer).SearchRoles(ctx, req.(*Roles))
+		return srv.(RoleServiceServer).SearchRole(ctx, req.(*Role))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RolesService_PostRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Roles)
+func _RoleService_PostRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Role)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RolesServiceServer).PostRoles(ctx, in)
+		return srv.(RoleServiceServer).PostRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.RolesService/PostRoles",
+		FullMethod: "/proto.RoleService/PostRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RolesServiceServer).PostRoles(ctx, req.(*Roles))
+		return srv.(RoleServiceServer).PostRole(ctx, req.(*Role))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RolesService_PatchRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Roles)
+func _RoleService_PatchRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Role)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RolesServiceServer).PatchRoles(ctx, in)
+		return srv.(RoleServiceServer).PatchRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.RolesService/PatchRoles",
+		FullMethod: "/proto.RoleService/PatchRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RolesServiceServer).PatchRoles(ctx, req.(*Roles))
+		return srv.(RoleServiceServer).PatchRole(ctx, req.(*Role))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RolesService_DeleteRoles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RolesIDIn)
+func _RoleService_DeleteRole_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RoleIDIn)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(RolesServiceServer).DeleteRoles(ctx, in)
+		return srv.(RoleServiceServer).DeleteRole(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/proto.RolesService/DeleteRoles",
+		FullMethod: "/proto.RoleService/DeleteRole",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RolesServiceServer).DeleteRoles(ctx, req.(*RolesIDIn))
+		return srv.(RoleServiceServer).DeleteRole(ctx, req.(*RoleIDIn))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-// RolesService_ServiceDesc is the grpc.ServiceDesc for RolesService service.
+// RoleService_ServiceDesc is the grpc.ServiceDesc for RoleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
-var RolesService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "proto.RolesService",
-	HandlerType: (*RolesServiceServer)(nil),
+var RoleService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "proto.RoleService",
+	HandlerType: (*RoleServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetRoles",
-			Handler:    _RolesService_GetRoles_Handler,
+			MethodName: "GetRole",
+			Handler:    _RoleService_GetRole_Handler,
 		},
 		{
-			MethodName: "SearchRoles",
-			Handler:    _RolesService_SearchRoles_Handler,
+			MethodName: "SearchRole",
+			Handler:    _RoleService_SearchRole_Handler,
 		},
 		{
-			MethodName: "PostRoles",
-			Handler:    _RolesService_PostRoles_Handler,
+			MethodName: "PostRole",
+			Handler:    _RoleService_PostRole_Handler,
 		},
 		{
-			MethodName: "PatchRoles",
-			Handler:    _RolesService_PatchRoles_Handler,
+			MethodName: "PatchRole",
+			Handler:    _RoleService_PatchRole_Handler,
 		},
 		{
-			MethodName: "DeleteRoles",
-			Handler:    _RolesService_DeleteRoles_Handler,
+			MethodName: "DeleteRole",
+			Handler:    _RoleService_DeleteRole_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -7,7 +7,8 @@ import Prayers from './components/Prayers.vue'
 import Business from './components/Business.vue'
 import Program from './components/Program.vue'
 import Announcement from './components/Announcement.vue'
-import SpeakerTalk from './components/SpeakerTalk.vue'
+import Member from './components/Member.vue'
+import Admin from './components/Admin.vue'
 import axios from "axios"
 </script>
 
@@ -69,11 +70,17 @@ import axios from "axios"
         </div>
     </div>
     <div v-if="hideShowMainDiv" style="margin-left: 20px; margin-right:20px;">
-        <h3 style="margin-left:20px; margin-top:20px;">Speakers/Prayers</h3>
         <v-expansion-panels>
-            <v-expansion-panel title="Speakers">
+            <v-expansion-panel title="Members">
                 <v-expansion-panel-text>
-                    <SpeakerTalk />
+                    <Member />
+                </v-expansion-panel-text>
+            </v-expansion-panel>
+        </v-expansion-panels>
+        <v-expansion-panels v-if="hideShowAdmin">
+            <v-expansion-panel title="Admin">
+                <v-expansion-panel-text>
+                    <Admin />
                 </v-expansion-panel-text>
             </v-expansion-panel>
         </v-expansion-panels>
@@ -86,7 +93,7 @@ export default {
     name: "App",
     data() {
         return {
-            role: "",
+            role: "admin",
             date: "",
             agenda: undefined,
         }
@@ -163,6 +170,9 @@ export default {
         },
         hideShowDetailDiv() {
             return this.date === "" ? false : true;
+        },
+        hideShowAdmin() {
+            return this.role === "admin" ? true : false;
         }
     }
 }
