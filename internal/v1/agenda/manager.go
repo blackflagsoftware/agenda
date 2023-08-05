@@ -236,7 +236,9 @@ func (m *ManagerAgenda) Print(date string) error {
 	m.printClosing(pdf, agenda, hymMgr)
 	m.printPrayers(pdf)
 
-	pdf.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-agenda.pdf")
+	path := config.DocumentDir + "/documents/" + date + "-agenda.pdf"
+	fmt.Println(path)
+	pdf.OutputFileAndClose(path)
 	return nil
 }
 
