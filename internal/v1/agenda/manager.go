@@ -236,7 +236,7 @@ func (m *ManagerAgenda) Print(date string) error {
 	m.printClosing(pdf, agenda, hymMgr)
 	m.printPrayers(pdf)
 
-	pdf.OutputFileAndClose(config.DocumentDir + "/" + date + "-agenda.pdf")
+	pdf.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-agenda.pdf")
 	return nil
 }
 
@@ -658,8 +658,8 @@ func (m *ManagerAgenda) Publish(date string) error {
 	m.printProgramProgram(pdfP, pdfL, agenda)
 	m.printProgramAnnouncements(pdfP, pdfL, agenda)
 
-	pdfP.OutputFileAndClose(config.DocumentDir + "/" + date + "-qr.pdf")
-	pdfL.OutputFileAndClose(config.DocumentDir + "/" + date + "-program.pdf")
+	pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-qr.pdf")
+	pdfL.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-program.pdf")
 	return nil
 }
 
