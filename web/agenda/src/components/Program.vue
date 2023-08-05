@@ -44,15 +44,18 @@ export default {
 	props: [
 		"agenda"
 	],
+	emits: {
+		refreshAgenda: null,
+	},
 	mounted() {
+		console.log("in mount:", this.localAgenda.fast_sunday);
+		this.fast_sunday = this.localAgenda.fast_sunday;
 		this.getSpeakers();
 	},
 	methods: {
 		clickFastSunday: function() {
-			axios.patch(import.meta.env.VITE_API_URL + "/v1/agenda", {"date": this.localAgenda.date, "fast_sunday": this.fast_sunday})
-			.catch(error => {
-				console.log(error);
-			})
+			const obj = {"date": this.localAgenda.date, "fast_sunday": this.fast_sunday}
+			this.$emit("refreshAgenda", obj);
 		},
 		getSpeakers: function() {
 			axios.post(import.meta.env.VITE_API_URL + "/v1/speaker/search", {"search": [{"column": "date", "value": this.localAgenda.date, "compare": "="}]})
@@ -87,7 +90,12 @@ export default {
 	watch: {
 		agenda: {
 			handler(newAgenda, oldAgenda) {
+				console.log("new agenda:", newAgenda.fast_sunday);
+				if (oldAgenda !== undefined) {
+				console.log("old agenda", oldAgenda.fast_sunday);
+				}
 				this.localAgenda = newAgenda;
+				this.fast_sunday = this.localAgenda.fast_sunday;
 				this.getSpeakers();
 			},
 			immediate: true

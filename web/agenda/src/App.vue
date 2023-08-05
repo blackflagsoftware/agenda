@@ -47,7 +47,7 @@ import axios from "axios"
           <v-expansion-panel title="Program">
             <v-expansion-panel-text>
                 <div style="margin-top:20px">
-                    <Program :agenda="agenda"/>
+                    <Program :agenda="agenda" @refresh-agenda="refreshAgenda"/>
                 </div>
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -64,7 +64,7 @@ import axios from "axios"
             </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
-        <div style="margin-top:20px;">
+        <div style="margin-top:20px; margin-bottom:20px;">
             <v-btn @click="printAgenda()" style="margin-right:10px;" color="blue">Agenda Download</v-btn>
             <v-btn @click="publishProgram()" color="teal">Publish Program</v-btn>
         </div>
@@ -93,7 +93,7 @@ export default {
     name: "App",
     data() {
         return {
-            role: "",
+            role: "admin",
             date: "",
             agenda: undefined,
         }

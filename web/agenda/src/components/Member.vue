@@ -7,7 +7,7 @@ import axios from "axios"
 		fixed-header
 		v-model:items-per-page="itemsPerPage"
 		density="compact"
-		:items="speakerTalks"
+		:items="members"
 		:headers="headers"
 		item-value="id"
 		@click:row="handleClick"
@@ -26,19 +26,13 @@ import axios from "axios"
 							<v-container>
 								<v-row>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.name" label="Name"></v-text-field>
+										<v-text-field variant="outlined" v-model="editMember.first_name" label="First Name"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.gender" label="Gender"></v-text-field>
+										<v-text-field variant="outlined" v-model="editMember.last_name" label="Last Name"></v-text-field>
 									</v-col>
 									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.active" label="Active"></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.last_talked" label="Last Prayed" ></v-text-field>
-									</v-col>
-									<v-col cols="12" sm="6" md="4">
-										<v-text-field v-model="editMember.rntt" label="No Pray"></v-text-field>
+										<v-select variant="outlined" v-model="editMember.gender" label="Gender" :items="genders"></v-select>
 									</v-col>
 								</v-row>
 							</v-container>
@@ -57,29 +51,28 @@ import axios from "axios"
 
 <script>
 export default {
-	name: "SpeakerTalk",
+	name: "Member",
 	data() {
 		return {
 			dialogNew: false,
 			itemsPerPage: 10,
-			speakerTalks: [],
+			members: [],
 			headers: [
 				{ title: "id", align: "start", key: "id", sortable: false},
 				{ title: "First Name", align: "start", key: "first_name" },
 				{ title: "Last Name", align: "start", key: "last_name" },
 				{ title: "Gender", align: "start", key: "gender" },
-				{ title: "Active", align: "start", key: "active" },
+				{ title: "Active", align: "star", key: "active" },
 				{ title: "Last Prayed", align: "start", key: "last_prayed" },
 				{ title: "No Pray", align: "start", key: "no_prayer" },
 				{ title: "Last Talked", align: "start", key: "last_talked" },
 				{ title: "No Talk", align: "start", key: "no_talk" },
 			],
+			genders:["Male", "Female"],
 			editMember: {
-				name: "",
+				first_name: "",
+				last_name: "",
 				gender: "",
-				active: false,
-				last_talked: "",
-				rntt: false,
 			},
 			editIndex: -1,
 		}
@@ -91,7 +84,9 @@ export default {
 		getSpeakerTalk: function() {
 			axios.post(import.meta.env.VITE_API_URL + "/v1/member/search?sort=last_name")
 			.then(response => {
-				this.speakerTalks = response.data.data;
+				const active = response.data.data.map(m => {m.active = (m.active ? "Y":"N"); return m});
+				const no_pray = active.map(m => {m.no_prayer = (m.no_prayer ? "Y":"N"); return m});
+				this.members = no_pray.map(m => {m.no_talk = (m.no_talk ? "Y":"N"); return m});
 			})
 		},
 		handleClick: function() {
