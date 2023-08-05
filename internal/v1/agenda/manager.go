@@ -844,58 +844,58 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 		pdfL.Ln(3)
 		pdfL.Cell(4, 5, "")
 		pdfL.Cell(115, 5, "Testimonies")
-		pdfL.Cell(20, 5, "")
+		pdfL.Cell(24, 5, "")
 		pdfL.Cell(0, 5, "Testimonies")
 		pdfL.Ln(7)
-		return
-	}
-	speakerPosition := 1
-	positionMapping := map[int]string{1: "1st", 2: "2nd", 3: "3rd", 4: "4th", 5: "5th"}
+	} else {
+		speakerPosition := 1
+		positionMapping := map[int]string{1: "1st", 2: "2nd", 3: "3rd", 4: "4th", 5: "5th"}
 
-	speStor := spe.InitStorage()
-	speMgr := spe.NewManagerSpeaker(speStor)
-	speakers := []spe.Speaker{}
-	if _, err := speMgr.Search(&speakers, spe.SpeakerParam{Param: util.Param{Search: []util.ParamSearch{{Column: "date", Value: agenda.Date, Compare: "="}}}}); err != nil {
-		fmt.Println("printProgramProgram: getting speakers")
-		return
-	}
-	positionStr := ""
-	speaker := ""
-	for _, s := range speakers {
-		foundOther := false
-		if s.Name.String == "Intermediate Hymn" {
-			hymn := hym.Hymn{Id: int(agenda.IntermediateHymn.Int64)}
-			if err := hymMgr.Get(&hymn); err != nil {
-				fmt.Println("printProgramProgram: getting intermediate hymn")
-				return
+		speStor := spe.InitStorage()
+		speMgr := spe.NewManagerSpeaker(speStor)
+		speakers := []spe.Speaker{}
+		if _, err := speMgr.Search(&speakers, spe.SpeakerParam{Param: util.Param{Search: []util.ParamSearch{{Column: "date", Value: agenda.Date, Compare: "="}}}}); err != nil {
+			fmt.Println("printProgramProgram: getting speakers")
+			return
+		}
+		positionStr := ""
+		speaker := ""
+		for _, s := range speakers {
+			foundOther := false
+			if s.Name.String == "Intermediate Hymn" {
+				hymn := hym.Hymn{Id: int(agenda.IntermediateHymn.Int64)}
+				if err := hymMgr.Get(&hymn); err != nil {
+					fmt.Println("printProgramProgram: getting intermediate hymn")
+					return
+				}
+				positionStr = "Intermediate Hymn:"
+				speaker = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
+				foundOther = true
 			}
-			positionStr = "Intermediate Hymn:"
-			speaker = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
-			foundOther = true
+			if s.Name.String == "Musical Number" {
+				positionStr = "Musical Number:"
+				speaker = agenda.MusicalNumber.String
+				foundOther = true
+			}
+			if !foundOther {
+				positionStr = positionMapping[speakerPosition] + " Speaker:"
+				speakerPosition++
+				speaker = s.Name.String
+			}
+			pdfP.SetFont(FONT, "", 12)
+			pdfL.SetFont(FONT, "", 12)
+			pdfP.Cell(4, 5, "")
+			pdfP.Cell(38, 5, positionStr)
+			pdfP.Cell(0, 5, speaker)
+			pdfP.Ln(5)
+			pdfL.Cell(4, 5, "")
+			pdfL.Cell(38, 5, positionStr)
+			pdfL.Cell(81, 5, speaker)
+			pdfL.Cell(20, 5, "")
+			pdfL.Cell(38, 5, positionStr)
+			pdfL.Cell(0, 5, speaker)
+			pdfL.Ln(5)
 		}
-		if s.Name.String == "Musical Number" {
-			positionStr = "Musical Number:"
-			speaker = agenda.MusicalNumber.String
-			foundOther = true
-		}
-		if !foundOther {
-			positionStr = positionMapping[speakerPosition] + " Speaker:"
-			speakerPosition++
-			speaker = s.Name.String
-		}
-		pdfP.SetFont(FONT, "", 12)
-		pdfL.SetFont(FONT, "", 12)
-		pdfP.Cell(4, 5, "")
-		pdfP.Cell(38, 5, positionStr)
-		pdfP.Cell(0, 5, speaker)
-		pdfP.Ln(5)
-		pdfL.Cell(4, 5, "")
-		pdfL.Cell(38, 5, positionStr)
-		pdfL.Cell(81, 5, speaker)
-		pdfL.Cell(20, 5, "")
-		pdfL.Cell(38, 5, positionStr)
-		pdfL.Cell(0, 5, speaker)
-		pdfL.Ln(5)
 	}
 	hymnClosing := hym.Hymn{Id: int(agenda.ClosingHymn.Int64)}
 	if err := hymMgr.Get(&hymnClosing); err != nil {
