@@ -15,6 +15,6 @@ WORKDIR /app
 COPY --from=builder /build/rest-server ./
 COPY --from=builder /build/web/agenda/dist/ ./web
 COPY --from=builder /build/scripts/migrations/ ./migrations
-RUN mkdir -p data /app/web/documents
+RUN mkdir -p data /app/web/documents && chown bf /app/web/documents
 USER bfs
 CMD ["./rest-server"]
