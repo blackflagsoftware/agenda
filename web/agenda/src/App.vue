@@ -93,7 +93,7 @@ export default {
     name: "App",
     data() {
         return {
-            role: "admin",
+            role: "",
             date: "",
             agenda: undefined,
         }
