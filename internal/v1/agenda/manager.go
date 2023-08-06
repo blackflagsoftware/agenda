@@ -389,6 +389,7 @@ func (m *ManagerAgenda) printWardBusiness(pdf *gofpdf.Fpdf, agenda *Agenda) {
 			return
 		}
 		if len(sustainings) > 0 {
+			pdf.Ln(5)
 			pdf.SetFont(FONT, "B", 12)
 			pdf.Cell(4, 5, "")
 			pdf.Cell(26, 5, "Sustainings:")
@@ -660,7 +661,7 @@ func (m *ManagerAgenda) Publish(date string) error {
 	m.printProgramProgram(pdfP, pdfL, agenda)
 	m.printProgramAnnouncements(pdfP, pdfL, agenda)
 
-	pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-qr.pdf")
+	pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thWard-program-qr.pdf")
 	pdfL.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-program.pdf")
 	return nil
 }
