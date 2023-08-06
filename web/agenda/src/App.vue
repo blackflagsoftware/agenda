@@ -15,7 +15,7 @@ import axios from "axios"
 <template>
   <v-app>
     <div style="margin-left:20px; margin-top:20px;">
-      <Login @capture-role="captureRole"/>
+      <Login @capture-role="captureRole" :role="role" @logout="logout"/>
     </div>
     <div v-if="hideShowMainDiv" style="margin-left:20px;">
       <Date @capture-agenda="captureAgenda"/>
@@ -102,7 +102,12 @@ export default {
         Login
     },
     methods: {
+        logout: function() {
+			sessionStorage.removeItem("role");
+            this.role = "";
+        },
         captureRole: function(role) {
+			sessionStorage.setItem("role", role);
             this.role = role;
         },
         captureAgenda: function(agenda) {
