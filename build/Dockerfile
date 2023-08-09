@@ -15,7 +15,7 @@ WORKDIR /app
 COPY --from=builder /build/rest-server ./
 COPY --from=builder /build/web/agenda/dist/ ./web
 COPY --from=builder /build/scripts/migrations/ ./migrations
-COPY --from=builder /build/data/11thward-program-qr.png .
+COPY --from=builder /build/data/11thward-program-qr.png ./web/assets
 RUN mkdir -p data /app/web/documents && chown bfs /app/web/documents
 USER bfs
 CMD ["./rest-server"]

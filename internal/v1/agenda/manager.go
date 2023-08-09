@@ -693,7 +693,7 @@ func (m *ManagerAgenda) Publish(date string) error {
 	pdfL.Cell(20, 5, "")
 	pdfL.CellFormat(0, 5, "Digital Program", "", 2, "C", false, 0, "")
 	pdfL.Ln(5)
-	qrCodePath := "/Users/ericsmith/Programming/scratch/11thward-program-qr.png" // "/app/data/11thward-program-qr.png"
+	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
 	pdfL.ImageOptions(qrCodePath, 46, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
 	pdfL.ImageOptions(qrCodePath, 185, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
 	pdfL.Ln(53)
