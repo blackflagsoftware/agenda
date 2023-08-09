@@ -23,6 +23,7 @@ import (
 )
 
 const FONT = "helvetica"
+const HL = "__________________________________________________________________________________"
 
 //go:generate mockgen -source=manager.go -destination=mock.go -package=agenda
 type (
@@ -231,6 +232,13 @@ func (m *ManagerAgenda) Print(date string) error {
 	m.printBishopBusiness(pdf, agenda)
 	m.printNewMembers(pdf, agenda)
 	m.printOrdinance(pdf, agenda)
+	if agenda.WardBusiness.Bool || agenda.BishopBusiness.Bool || agenda.NewMembers.Bool || agenda.Ordinance.Bool || agenda.LetterRead.Bool || agenda.StakeBusiness.Bool {
+		pdf.SetFont(FONT, "", 12)
+		pdf.Ln(2)
+		pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+		pdf.Ln(2)
+	}
+
 	m.printSacrament(pdf, agenda, hymMgr)
 	m.printProgram(pdf, agenda, hymMgr)
 	m.printClosing(pdf, agenda, hymMgr)
@@ -281,14 +289,16 @@ func (m *ManagerAgenda) printPersons(pdf *gofpdf.Fpdf, agenda *Agenda) {
 		names = append(names, v.Name.String)
 	}
 	pdf.Cell(0, 5, strings.Join(names, "; "))
-	pdf.Ln(8)
+
 	pdf.SetFont(FONT, "", 12)
+	pdf.Ln(2)
+	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+	pdf.Ln(2)
+
 	pdf.Cell(34, 5, "Welcome Visitors")
-	pdf.Ln(8)
 }
 
 func (m *ManagerAgenda) printAnnouncements(pdf *gofpdf.Fpdf, agenda *Agenda) {
-	pdf.SetFont(FONT, "U", 12)
 	pdf.Cell(34, 5, "Announcements:")
 	pdf.SetFont(FONT, "I", 11)
 	pdf.Cell(116, 5, "\"Please remember to read your programs and weekly email sent to you by ")
@@ -321,7 +331,10 @@ func (m *ManagerAgenda) printAnnouncements(pdf *gofpdf.Fpdf, agenda *Agenda) {
 			pdf.MultiCell(0, 5, "- "+a.Message.String, "", "", false)
 		}
 	}
-	pdf.Ln(8)
+	pdf.SetFont(FONT, "", 12)
+	pdf.Ln(2)
+	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+	pdf.Ln(2)
 }
 
 func (m *ManagerAgenda) printOpening(pdf *gofpdf.Fpdf, agenda *Agenda) (hymMgr *hym.ManagerHymn) {
@@ -341,7 +354,11 @@ func (m *ManagerAgenda) printOpening(pdf *gofpdf.Fpdf, agenda *Agenda) (hymMgr *
 	pdf.Cell(22, 5, "Invocation:")
 	pdf.SetFont(FONT, "B", 12)
 	pdf.Cell(0, 5, agenda.Invocation.String)
-	pdf.Ln(8)
+
+	pdf.SetFont(FONT, "", 12)
+	pdf.Ln(2)
+	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+	pdf.Ln(2)
 	return
 }
 
@@ -537,7 +554,10 @@ func (m *ManagerAgenda) printSacrament(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr 
 	pdf.Ln(5)
 	pdf.SetFont(FONT, "I", 11)
 	pdf.Cell(0, 5, "\"We thank you for your reverence during the sacrament.\"")
-	pdf.Ln(8)
+	pdf.SetFont(FONT, "", 12)
+	pdf.Ln(2)
+	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+	pdf.Ln(2)
 	return
 }
 
@@ -561,7 +581,10 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
 		pdf.Cell(0, 5, "4) Announce closing hymn and benediction")
-		pdf.Ln(8)
+		pdf.SetFont(FONT, "", 12)
+		pdf.Ln(2)
+		pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+		pdf.Ln(2)
 		return
 	}
 	speakerPosition := 1
@@ -594,17 +617,21 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 			foundOther = true
 		}
 		if !foundOther {
-			positionStr = positionMapping[speakerPosition]
+			positionStr = positionMapping[speakerPosition] + " Speaker"
 			speakerPosition++
 			speaker = s.Name.String
 		}
 		pdf.SetFont(FONT, "", 12)
 		pdf.Cell(4, 5, "")
-		pdf.Cell(20, 5, positionStr)
+		pdf.Cell(38, 5, positionStr)
 		pdf.Cell(0, 5, speaker)
 		pdf.Ln(5)
 	}
-	pdf.Ln(5)
+
+	pdf.SetFont(FONT, "", 12)
+	pdf.Ln(2)
+	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
+	pdf.Ln(2)
 }
 
 func (m *ManagerAgenda) printClosing(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn) {
@@ -660,6 +687,20 @@ func (m *ManagerAgenda) Publish(date string) error {
 	m.printProgramPersons(pdfP, pdfL, agenda)
 	m.printProgramProgram(pdfP, pdfL, agenda)
 	m.printProgramAnnouncements(pdfP, pdfL, agenda)
+
+	pdfL.SetFont(FONT, "", 16)
+	pdfL.CellFormat(119, 5, "Digital Program", "", 0, "C", false, 0, "")
+	pdfL.Cell(20, 5, "")
+	pdfL.CellFormat(0, 5, "Digital Program", "", 2, "C", false, 0, "")
+	pdfL.Ln(5)
+	qrCodePath := "/Users/ericsmith/Programming/scratch/11thward-program-qr.png" // "/app/data/11thward-program-qr.png"
+	pdfL.ImageOptions(qrCodePath, 46, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 185, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.Ln(53)
+	pdfL.SetFont(FONT, "", 12)
+	pdfL.CellFormat(119, 5, "(this code will be reused every week)", "", 0, "C", false, 0, "")
+	pdfL.Cell(20, 5, "")
+	pdfL.CellFormat(0, 5, "(this code will be reused every week)", "", 2, "C", false, 0, "")
 
 	pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thward-program-qr.pdf")
 	pdfL.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-program.pdf")
@@ -733,13 +774,15 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		fmt.Println("printProgramAnnouncements: getting announcements")
 		return
 	}
+	// for the printed program, put the announcements on a new page
+	pdfL.AddPage()
 	if len(announcements) > 0 {
 		pdfP.SetFont(FONT, "U", 12)
-		pdfL.SetFont(FONT, "U", 12)
+		pdfL.SetFont(FONT, "U", 16)
 		pdfP.Cell(34, 5, "Announcements:")
-		pdfL.Cell(119, 5, "Announcements:")
+		pdfL.CellFormat(119, 12, "Accouncements", "", 0, "TC", false, 0, "")
 		pdfL.Cell(20, 5, "")
-		pdfL.Cell(0, 5, "Announcements:")
+		pdfL.CellFormat(0, 12, "Accouncements", "", 2, "TC", false, 0, "")
 		pdfP.SetFont(FONT, "", 12)
 		pdfL.SetFont(FONT, "", 12)
 

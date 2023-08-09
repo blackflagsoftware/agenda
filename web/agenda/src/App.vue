@@ -152,7 +152,8 @@ export default {
         publishProgram: function() {
             axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/publish/" + this.date)
             .then(() => {
-                axios.get(import.meta.env.VITE_API_URL + "/documents/"+this.date+"-program.pdf", {responseType: "arraybuffer"})
+                    const date = new window.Date();
+                axios.get(import.meta.env.VITE_API_URL + "/documents/"+this.date+"-program.pdf?v=" + date, {responseType: "arraybuffer"})
                 .then(response => {
                     let blob = new Blob([response.data], {type:'application/pdf'});
                     let link = document.createElement('a');

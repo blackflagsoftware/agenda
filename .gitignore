@@ -4,3 +4,5 @@ cmd/rest/rest
 cmd/rest/rest.exec
 tools/migration/migration
 .vscode
+
+.DS_Store

@@ -1,7 +1,6 @@
 package util
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -45,7 +44,6 @@ func NewOutput(c echo.Context, payload interface{}, apiError *ae.ApiError, total
 		Error:   err,
 		Meta:    meta,
 	}
-	fmt.Printf("%+v\n", output)
 	return output
 }
 

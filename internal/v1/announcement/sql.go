@@ -27,7 +27,7 @@ func (d *SQLAnnouncement) Read(ann *Announcement) error {
 			date,
 			message,
 			pulpit
-		FROM announcement`
+		FROM announcement where id = $1`
 	if errDB := d.DB.Get(ann, sqlGet, ann.Id); errDB != nil {
 		return ae.DBError("Announcement Get: unable to get record.", errDB)
 	}

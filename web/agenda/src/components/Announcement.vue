@@ -10,7 +10,7 @@ import axios from "axios"
 	<v-form>
 		<v-row>
 			<v-col cols="12" md="9">
-				<v-text-field label="Message" variant="outlined" density="compact" v-model="message"></v-text-field>
+				<v-textarea auto-grow rows="1" label="Message" variant="outlined" density="compact" v-model="message"></v-textarea>
 			</v-col>
 			<v-col cols="12" md="2">
 				<v-checkbox label="Pulpit" v-model="pulpit"></v-checkbox>
