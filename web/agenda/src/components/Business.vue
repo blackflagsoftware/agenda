@@ -52,6 +52,7 @@ import Ordinance from "./Ordinance.vue";
 
 <script>
   export default {
+	name: "Business",
     data: () => ({
       enabledWard: false,
 	  enabledBishop: false,

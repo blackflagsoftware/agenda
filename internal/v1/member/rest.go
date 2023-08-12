@@ -118,8 +118,13 @@ func (h *RestMember) Patch(c echo.Context) error {
 }
 
 func (h *RestMember) Delete(c echo.Context) error {
-
-	member := &Member{}
+	idStr := c.Param("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		errParse := ae.ParamError("id is not valie", err)
+		return c.JSON(errParse.StatusCode, util.NewOutput(c, nil, &errParse, nil))
+	}
+	member := &Member{Id: int(id)}
 	if err := h.managerMember.Delete(member); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()

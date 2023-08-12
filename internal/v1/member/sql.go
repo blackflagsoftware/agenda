@@ -73,6 +73,11 @@ func (d *SQLMember) ReadAll(mem *[]Member, param MemberParam) (int, error) {
 }
 
 func (d *SQLMember) Create(mem *Member) error {
+	count, errCount := d.count()
+	if errCount != nil {
+		return errCount
+	}
+	mem.Id = count
 	sqlPost := `
 		INSERT INTO member (
 			id,
@@ -128,4 +133,12 @@ func (d *SQLMember) Delete(mem *Member) error {
 		return ae.DBError("Member Delete: unable to delete record.", errDB)
 	}
 	return nil
+}
+
+func (d *SQLMember) count() (int, error) {
+	count := 0
+	if errDB := d.DB.Get(&count, "SELECT COALESCE(MAX(id), 0) FROM member"); errDB != nil {
+		return 0, ae.DBError("Member count: unable to get count.", errDB)
+	}
+	return count + 1, nil
 }
