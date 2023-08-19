@@ -21,7 +21,7 @@ import axios from "axios"
       <Date @capture-agenda="captureAgenda"/>
     </div> 
     <div v-if="hideShowDetailDiv" style="margin-left:20px; margin-right:20px;">
-        <h3 style="margin-left:20px; margin-top:20px;">Agenda/Program</h3>
+        <h3 style="margin-bottom:10px; margin-top:20px;">Agenda/Program</h3>
         <v-expansion-panels>
           <v-expansion-panel title="Persons">
             <v-expansion-panel-text>
@@ -76,9 +76,7 @@ import axios from "axios"
                     <Member />
                 </v-expansion-panel-text>
             </v-expansion-panel>
-        </v-expansion-panels>
-        <v-expansion-panels v-if="hideShowAdmin">
-            <v-expansion-panel title="Admin">
+            <v-expansion-panel v-if="hideShowAdmin" title="Admin">
                 <v-expansion-panel-text>
                     <Admin />
                 </v-expansion-panel-text>
@@ -104,6 +102,8 @@ export default {
     methods: {
         logout: function() {
 			sessionStorage.removeItem("role");
+            this.hideShowMainDiv = true;
+            this.hideShowDetailDiv = true;
             this.role = "";
         },
         captureRole: function(role) {

@@ -54,6 +54,7 @@ import axios from "axios"
 				<v-spacer></v-spacer>
 				<v-spacer></v-spacer>
 				<v-spacer></v-spacer>
+				<v-checkbox label="Show Not Active" @change="showNotActiveChange" v-model="showNotActive"></v-checkbox>
 				<v-checkbox label="Show No Pray" @change="showPrayerChange" v-model="showPrayer"></v-checkbox>
 				<v-checkbox label="Show No Talk" @change="showTalkChange" v-model="showTalk"></v-checkbox>
 				<v-dialog v-model="dialogDelete" max-width="530px">
@@ -123,6 +124,7 @@ export default {
 				no_talk: "N", 
 			},
 			editIndex: -1,
+			showNotActive: false,
 			showPrayer: false,
 			showTalk: false,
 		}
@@ -133,6 +135,10 @@ export default {
 	methods: {
 		getMemberList: function() {
 			var obj = {"search": []}
+			if (!this.showNotActive) {
+				const show_not_active = {"column": "active", "value": true, "compare": "="};
+				obj.search.push(show_not_active);
+			}
 			if (!this.showPrayer) {
 				const show_prayer = {"column": "no_prayer", "value": false, "compare": "="};
 				obj.search.push(show_prayer);
@@ -154,6 +160,9 @@ export default {
 				this.editMember = Object.assign({}, this.defaultMember)
 				this.editIndex = -1
 			})
+		},
+		showNotActiveChange: function() {
+			this.getMemberList();
 		},
 		showPrayerChange: function() {
 			this.getMemberList();
