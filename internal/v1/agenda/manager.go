@@ -702,8 +702,14 @@ func (m *ManagerAgenda) Publish(date string) error {
 	pdfL.Cell(20, 5, "")
 	pdfL.CellFormat(0, 5, "(this code will be reused every week)", "", 2, "C", false, 0, "")
 
-	pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thward-program-qr.pdf")
-	pdfL.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-program.pdf")
+	errQr := pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thward-program-qr.pdf")
+	if errQr != nil {
+		fmt.Println("Error saving QR file", errQr)
+	}
+	errProgram := pdfL.OutputFileAndClose(config.DocumentDir + "/documents/" + date + "-program.pdf")
+	if errProgram != nil {
+		fmt.Println("Error saving Program file", errProgram)
+	}
 	return nil
 }
 
@@ -780,9 +786,9 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		pdfP.SetFont(FONT, "U", 12)
 		pdfL.SetFont(FONT, "U", 16)
 		pdfP.Cell(34, 5, "Announcements:")
-		pdfL.CellFormat(119, 12, "Accouncements", "", 0, "TC", false, 0, "")
+		pdfL.CellFormat(119, 12, "Announcements", "", 0, "TC", false, 0, "")
 		pdfL.Cell(20, 5, "")
-		pdfL.CellFormat(0, 12, "Accouncements", "", 2, "TC", false, 0, "")
+		pdfL.CellFormat(0, 12, "Announcements", "", 2, "TC", false, 0, "")
 		pdfP.SetFont(FONT, "", 12)
 		pdfL.SetFont(FONT, "", 12)
 
@@ -930,15 +936,17 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			pdfL.SetFont(FONT, "", 12)
 			pdfP.Cell(4, 5, "")
 			pdfP.Cell(38, 5, positionStr)
-			pdfP.Cell(0, 5, speaker)
+			pdfP.MultiCell(0, 5, speaker, "", "", false)
 			pdfP.Ln(5)
+			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
 			pdfL.Cell(38, 5, positionStr)
-			pdfL.Cell(81, 5, speaker)
-			pdfL.Cell(20, 5, "")
+			pdfL.MultiCell(81, 5, speaker, "", "", false)
+			pdfL.SetXY(153, resetY)
+			// pdfL.Cell(20, 5, "")
 			pdfL.Cell(38, 5, positionStr)
-			pdfL.Cell(0, 5, speaker)
-			pdfL.Ln(5)
+			pdfL.MultiCell(0, 5, speaker, "", "", false)
+			// pdfL.Ln(5)
 		}
 	}
 	hymnClosing := hym.Hymn{Id: int(agenda.ClosingHymn.Int64)}

@@ -56,8 +56,6 @@ func (d *SQLMember) ReadAll(mem *[]Member, param MemberParam) (int, error) {
 		%s
 		ORDER BY %s %s`, searchStmt, param.Sort, param.Limit)
 	sqlSearch = d.DB.Rebind(sqlSearch)
-	fmt.Println(sqlSearch)
-	fmt.Printf("%+v\n", args)
 	if errDB := d.DB.Select(mem, sqlSearch, args...); errDB != nil {
 		return 0, ae.DBError("Member Search: unable to select records.", errDB)
 	}

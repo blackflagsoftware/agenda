@@ -42,7 +42,6 @@ func (d *SQLHymn) ReadAll(hym *[]Hymn, param HymnParam) (int, error) {
 		%s
 		ORDER BY id`, searchStmt)
 	sqlSearch = d.DB.Rebind(sqlSearch)
-	fmt.Printf("sql: %s\n", sqlSearch)
 	if errDB := d.DB.Select(hym, sqlSearch, args...); errDB != nil {
 		return 0, ae.DBError("Hymn Search: unable to select records.", errDB)
 	}
