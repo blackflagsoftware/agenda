@@ -32,20 +32,16 @@ export default {
 	data() {
 		return {
 			pulpit: false,
-			localAgenda: null,
 			message: "",
 			announcements: []
 		}
 	},
-	props: [
-		"agenda"
-	],
 	mounted() {
 		this.getAnnouncements();
 	},
 	methods: {
 		getAnnouncements: function() {
-			axios.post(import.meta.env.VITE_API_URL + "/v1/announcement/search", {"search": [{"column": "date", "value": this.localAgenda.date, "compare": "="}]})
+			axios.post(import.meta.env.VITE_API_URL + "/v1/announcement/search", {"search": []})
 			.then(response => {
 				this.announcements = response.data.data;
 			})
@@ -54,7 +50,7 @@ export default {
 			})
 		},
 		addSave: function() {
-			const obj = {"date": this.localAgenda.date, "message": this.message, "pulpit": this.pulpit}
+			const obj = {"message": this.message, "pulpit": this.pulpit}
 			axios.post(import.meta.env.VITE_API_URL + "/v1/announcement", obj)
 			.then(() => {
 				this.message = "";
@@ -71,15 +67,6 @@ export default {
 		},
 		showNoAnnouncements() {
 			return this.announcements.length === 0 ? true : false;
-		}
-	},
-	watch: {
-		agenda: {
-			handler(newAgenda, oldAgenda) {
-				this.localAgenda = newAgenda;
-				this.getAnnouncements();
-			},
-			immediate: true
 		}
 	}
 }

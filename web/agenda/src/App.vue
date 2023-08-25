@@ -17,9 +17,21 @@ import axios from "axios"
     <div style="margin-left:20px; margin-top:20px;">
       <Login @capture-role="captureRole" :role="role" @logout="logout"/>
     </div>
-    <div v-if="hideShowMainDiv" style="margin-left:20px;">
-      <Date @capture-agenda="captureAgenda"/>
-    </div> 
+    <div v-if="hideShowMainDiv" style="margin-left:20px; margin-right:20px;">
+        <Date @capture-agenda="captureAgenda"/>
+    </div>
+    <div v-if="hideShowAnnouncementDiv" style="margin-left:20px; margin-right:20px;">
+        <h3 style="margin-bottom:10px; margin-top:20px;">Announcements</h3>
+        <v-expansion-panels>
+            <v-expansion-panel title="Announcements">
+                <v-expansion-panel-text>
+                    <div style="margin-top:20px">
+                        <Announcement />
+                    </div>
+                </v-expansion-panel-text>
+            </v-expansion-panel>
+        </v-expansion-panels>
+    </div>
     <div v-if="hideShowDetailDiv" style="margin-left:20px; margin-right:20px;">
         <h3 style="margin-bottom:10px; margin-top:20px;">Agenda/Program</h3>
         <v-expansion-panels>
@@ -56,13 +68,6 @@ import axios from "axios"
                 <Business :agenda="agenda" @refresh-agenda="refreshAgenda"/>
             </v-expansion-panel-text>
           </v-expansion-panel>
-          <v-expansion-panel title="Announcements">
-            <v-expansion-panel-text>
-                <div style="margin-top:20px">
-                    <Announcement :agenda="agenda"/>
-                </div>
-            </v-expansion-panel-text>
-          </v-expansion-panel>
         </v-expansion-panels>
         <div style="margin-top:20px; margin-bottom:20px;">
             <v-btn @click="printAgenda()" style="margin-right:10px;" color="blue">Agenda Download</v-btn>
@@ -70,13 +75,19 @@ import axios from "axios"
         </div>
     </div>
     <div v-if="hideShowMainDiv" style="margin-left: 20px; margin-right:20px;">
+        <h3 style="margin-bottom:10px; margin-top:20px;">Members</h3>
         <v-expansion-panels>
             <v-expansion-panel title="Members">
                 <v-expansion-panel-text>
                     <Member />
                 </v-expansion-panel-text>
             </v-expansion-panel>
-            <v-expansion-panel v-if="hideShowAdmin" title="Admin">
+        </v-expansion-panels>
+    </div>
+    <div v-if="hideShowAdmin" style="margin-left: 20px; margin-right:20px;">
+        <h3 style="margin-bottom:10px; margin-top:20px;">Admin</h3>
+        <v-expansion-panels>
+            <v-expansion-panel title="Admin">
                 <v-expansion-panel-text>
                     <Admin />
                 </v-expansion-panel-text>
@@ -102,8 +113,9 @@ export default {
     methods: {
         logout: function() {
 			sessionStorage.removeItem("role");
-            this.hideShowMainDiv = true;
-            this.hideShowDetailDiv = true;
+            this.hideShowMainDiv = false;
+            this.hideShowDetailDiv = false;
+            this.hideShowAnnouncementDiv = false;
             this.role = "";
         },
         captureRole: function(role) {
@@ -172,13 +184,16 @@ export default {
     },
     computed: {
         hideShowMainDiv() {
-            return this.role === "" ? false : true;
+            return this.role === "admin" || this.role === "bishopric" ? true : false;
         },
         hideShowDetailDiv() {
             return this.date === "" ? false : true;
         },
         hideShowAdmin() {
             return this.role === "admin" ? true : false;
+        },
+        hideShowAnnouncementDiv() {
+            return this.role === "auxiliary" || this.role === "admin" || this.role === "bishopric" ? true : false;
         }
     }
 }

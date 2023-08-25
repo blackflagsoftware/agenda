@@ -110,7 +110,7 @@ func (h *RestDefaultCalling) Post(c echo.Context) error {
 
 func (h *RestDefaultCalling) Patch(c echo.Context) error {
 	def := DefaultCalling{}
-	if err := c.Bind(def); err != nil {
+	if err := c.Bind(&def); err != nil {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, bindErr.BodyError(), &bindErr, nil))
 	}
