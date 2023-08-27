@@ -22,7 +22,7 @@ import axios from "axios"
 	</v-form>
 	<v-sheet v-if="showNoAnnouncements">No Announcements</v-sheet>
 	<v-form>
-		<AnnouncementUpdate v-for="a in announcements" :item="a" @refresh-announcements="getAnnouncements"/>
+		<AnnouncementUpdate v-for="a in announcements" v-bind:item="a" v-bind:key="a.id" @refresh-announcements="getAnnouncements"/>
 	</v-form>
 </template>
 

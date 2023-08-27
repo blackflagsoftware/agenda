@@ -34,7 +34,6 @@ export default {
 	methods: {
 		updateSave: function() {
 			const obj = {"id": this.item.id, "message": this.message, "pulpit": this.pulpit};
-			console.log("in announdement upate", obj);
 			var url = import.meta.env.VITE_API_URL + "/v1/announcement";
 			axios.patch(url, obj)
 			.then(() => {
