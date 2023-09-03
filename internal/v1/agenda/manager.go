@@ -574,7 +574,7 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		pdf.Cell(0, 5, "1) Bare your testimony")
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
-		pdf.Cell(0, 5, "2) Turn the time over to the congregation \"We will end baring testimonies 5 minutes to the hour.\"")
+		pdf.Cell(0, 5, "2) Turn the time over to the congregation \"We will end bearing testimonies 5 minutes to the hour.\"")
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
 		pdf.Cell(0, 5, "3) Thank all who shared their testimones")
