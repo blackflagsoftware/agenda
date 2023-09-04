@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"net/http"
 	"os"
+	"os/signal"
 	"strings"
+	"time"
 
 	"github.com/blackflagsoftware/agenda/config"
 	ae "github.com/blackflagsoftware/agenda/internal/api_error"
 	m "github.com/blackflagsoftware/agenda/internal/middleware"
+	stor "github.com/blackflagsoftware/agenda/internal/storage"
+	"github.com/blackflagsoftware/agenda/internal/util"
 	"github.com/blackflagsoftware/agenda/internal/v1/agenda"
 	"github.com/blackflagsoftware/agenda/internal/v1/announcement"
 	"github.com/blackflagsoftware/agenda/internal/v1/bishopbusiness"
@@ -84,7 +89,30 @@ func main() {
 
 	InitializeRoutes(e)
 
-	e.Start(fmt.Sprintf(":%s", restPort))
+	go func() {
+		if err := e.Start(fmt.Sprintf(":%s", restPort)); err != nil && err != http.ErrServerClosed {
+			m.Default.Printf("graceful server stop with error: %s", err)
+		}
+	}()
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := e.Shutdown(ctx); err != nil {
+		m.Default.Printf("gracefult shutdown with error: %s", err)
+	}
+	// close sqlite connection
+	if err := stor.SqliteDB.Close(); err != nil {
+		m.Default.Printf("close sqlite with error: %s", err)
+	}
+	// copy db to backup
+	from := config.SqlitePath
+	to := config.SqlitePath + ".bak"
+	if err := util.CopyFileWithOverride(from, to); err != nil {
+		m.Default.Printf("backup of sql file with error: %s", err)
+	}
 }
 
 func setPidFile() {

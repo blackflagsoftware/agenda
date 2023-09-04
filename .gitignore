@@ -6,3 +6,5 @@ tools/migration/migration
 .vscode
 
 .DS_Store
+
+data/agenda.sql.bak

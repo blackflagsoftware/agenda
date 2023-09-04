@@ -3,6 +3,8 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"os"
 	"reflect"
 	"strings"
 
@@ -89,4 +91,38 @@ func (p *Param) CalculateParam(primarySort string, availableSort map[string]stri
 	}
 	p.Sort = strings.Join(sorted, ", ")
 	return
+}
+
+func CopyFileWithOverride(srcStr, dstStr string) error {
+	srcStat, err := os.Stat(srcStr)
+	if err != nil {
+		return err
+	}
+	if !srcStat.Mode().IsRegular() {
+		return fmt.Errorf("%s is not a regular file.", srcStr)
+	}
+	src, err := os.Open(srcStr)
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	dst, err := os.Create(dstStr)
+	if err != nil {
+		return err
+	}
+
+	buf := make([]byte, 1024)
+	for {
+		n, err := src.Read(buf)
+		if err != nil && err != io.EOF {
+			return err
+		}
+		if n == 0 {
+			break
+		}
+		if _, err := dst.Write(buf[:n]); err != nil {
+			return fmt.Errorf("error in writing: %s", err)
+		}
+	}
+	return err
 }
