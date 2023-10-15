@@ -798,8 +798,9 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 			pdfP.Cell(4, 5, "")
 			pdfP.MultiCell(0, 5, a.Message.String, "", "", false)
 			if strings.Contains(a.Message.String, "Trunk or Treat") {
+				pdfP.Cell(10, 5, "")
 				url := "https://docs.google.com/forms/d/e/1FAIpQLScQnrcpywkQKghfGL0YSxbb35goDF8uEBZ4qI5Re-PKZ_d2Sg/viewform"
-				pdfP.CellFormat(0, 5, "Trunk or Treat Signup/Info", "", 2, "", false, 0, url)
+				pdfP.CellFormat(0, 5, "Link Here", "", 2, "", false, 0, url)
 			}
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
