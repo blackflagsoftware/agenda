@@ -94,6 +94,9 @@ import axios from "axios"
             </v-expansion-panel>
         </v-expansion-panels>
     </div>
+    <div>
+        <v-alert v-model="showAlert" :text="alertText" type="error" density="compact" closable max-width="500"></v-alert>
+    </div>
   </v-app>
 </template>
 
@@ -105,12 +108,17 @@ export default {
             role: "",
             date: "",
             agenda: undefined,
+            showAlert: false,
+            alertText: "error here",
         }
     },
     components: {
         Login
     },
     methods: {
+        onClick: function() {
+            this.showAlert = true;
+        },
         logout: function() {
 			sessionStorage.removeItem("role");
             this.hideShowMainDiv = false;

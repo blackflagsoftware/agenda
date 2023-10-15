@@ -8,8 +8,9 @@ import (
 
 type (
 	Hymn struct {
-		Id   int         `db:"id" json:"id"`
-		Name null.String `db:"name" json:"name"`
+		Id      int         `db:"id" json:"id"`
+		Name    null.String `db:"name" json:"name"`
+		PdfLink null.String `db:"pdf_name" json:"pdf_link"`
 	}
 
 	HymnParam struct {

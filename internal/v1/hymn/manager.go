@@ -57,6 +57,11 @@ func (m *ManagerHymn) Patch(hymIn Hymn) error {
 		existingValues["name"] = hym.Name.String
 		hym.Name = hymIn.Name
 	}
+	// Name
+	if hymIn.PdfLink.Valid {
+		existingValues["pdf_name"] = hym.PdfLink.String
+		hym.Name = hymIn.Name
+	}
 	if err := m.dataHymn.Update(*hym); err != nil {
 		return err
 	}

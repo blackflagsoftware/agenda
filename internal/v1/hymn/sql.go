@@ -24,7 +24,8 @@ func (d *SQLHymn) Read(hym *Hymn) error {
 	sqlGet := `
 		SELECT
 			id,
-			name
+			name,
+			pdf_name
 		FROM hymn WHERE id = $1`
 	if errDB := d.DB.Get(hym, sqlGet, hym.Id); errDB != nil {
 		return ae.DBError("Hymn Get: unable to get record.", errDB)
@@ -37,7 +38,8 @@ func (d *SQLHymn) ReadAll(hym *[]Hymn, param HymnParam) (int, error) {
 	sqlSearch := fmt.Sprintf(`
 		SELECT
 			id,
-			id || ' - ' || name AS name
+			id || ' - ' || name AS name,
+			pdf_name
 		FROM hymn
 		%s
 		ORDER BY id`, searchStmt)
@@ -62,10 +64,12 @@ func (d *SQLHymn) Create(hym *Hymn) error {
 	sqlPost := `
 		INSERT INTO hymn (
 			id,
-			name
+			name,
+			pdf_name
 		) VALUES (
 			:id,
-			:name
+			:name,
+			:pdf_name
 		)`
 	_, errDB := d.DB.NamedExec(sqlPost, hym)
 	if errDB != nil {
@@ -78,7 +82,8 @@ func (d *SQLHymn) Create(hym *Hymn) error {
 func (d *SQLHymn) Update(hym Hymn) error {
 	sqlPatch := `
 		UPDATE hymn SET
-			name = :name
+			name = :name,
+			pdf_name = :pdf_name
 		WHERE id = :id`
 	if _, errDB := d.DB.NamedExec(sqlPatch, hym); errDB != nil {
 		return ae.DBError("Hymn Patch: unable to update record.", errDB)

@@ -4,9 +4,6 @@ import axios from "axios"
 </script>
 
 <template>
-	<div style="margin-bottom:10px">
-		<b>Announcements</b>
-	</div>
 	<v-form>
 		<v-row>
 			<v-col cols="12" md="9">

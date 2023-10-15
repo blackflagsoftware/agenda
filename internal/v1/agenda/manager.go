@@ -694,8 +694,8 @@ func (m *ManagerAgenda) Publish(date string) error {
 	pdfL.CellFormat(0, 5, "Digital Program", "", 2, "C", false, 0, "")
 	pdfL.Ln(5)
 	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
-	pdfL.ImageOptions(qrCodePath, 46, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
-	pdfL.ImageOptions(qrCodePath, 185, pdfL.GetY(), 48, 48, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 52, pdfL.GetY(), 32, 32, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 193, pdfL.GetY(), 32, 32, false, gofpdf.ImageOptions{}, 0, "")
 	pdfL.Ln(53)
 	pdfL.SetFont(FONT, "", 12)
 	pdfL.CellFormat(119, 5, "(this code will be reused every week)", "", 0, "C", false, 0, "")
@@ -797,11 +797,21 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 			pdfL.Ln(6)
 			pdfP.Cell(4, 5, "")
 			pdfP.MultiCell(0, 5, a.Message.String, "", "", false)
+			if strings.Contains(a.Message.String, "Trunk or Treat") {
+				url := "https://docs.google.com/forms/d/e/1FAIpQLScQnrcpywkQKghfGL0YSxbb35goDF8uEBZ4qI5Re-PKZ_d2Sg/viewform"
+				pdfP.CellFormat(0, 5, "Trunk or Treat Signup/Info", "", 2, "", false, 0, url)
+			}
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
 			pdfL.MultiCell(114, 5, a.Message.String, "", "", false)
 			pdfL.SetXY(153, resetY)
 			pdfL.MultiCell(114, 5, a.Message.String, "", "", false)
+			if strings.Contains(a.Message.String, "Trunk or Treat") {
+				qrCodePath := config.DocumentDir + "/assets/trunk_treat.png"
+				pdfL.ImageOptions(qrCodePath, 16, pdfL.GetY(), 24, 24, false, gofpdf.ImageOptions{}, 0, "")
+				pdfL.ImageOptions(qrCodePath, 154, pdfL.GetY(), 24, 24, false, gofpdf.ImageOptions{}, 0, "")
+				pdfL.Ln(24)
+			}
 		}
 	}
 	pdfP.Ln(10)
