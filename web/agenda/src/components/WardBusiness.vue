@@ -88,6 +88,9 @@ export default {
 				const obj = {"date": this.date, "name": this.addName, "calling": this.addCalling}
 				axios.post(import.meta.env.VITE_API_URL + "/v1/wardbusinesssus", obj)
 				.then(() => {
+					this.addWardType = "";
+					this.addName = "";
+					this.addCalling = "";
 					this.getWardBusiness();
 				})
 				.catch(error => {

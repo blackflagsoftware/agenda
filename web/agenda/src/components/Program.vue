@@ -12,7 +12,7 @@ import axios from "axios"
 		<v-form>
 			<v-row>
 				<v-col cols="12" md="1">
-					<v-select label="Position" variant="outlined" density="compact" v-model="position" :items="['1', '2', '3', '4', '5']"></v-select>
+					<v-select label="Position" variant="outlined" density="compact" v-model="position" :items="['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']"></v-select>
 				</v-col>
 				<v-col cols="12" md="10">
 					<v-combobox label="Name" variant="outlined" density="compact" v-model="name" :items="['Intermediate Hymn', 'Musical Number']"></v-combobox>

@@ -127,7 +127,7 @@ export default {
 		},
 		roleUserSaveClick: function() {
 			if (this.new) {
-				const obj = {"name": this.name, "pwd": this.pwd, "role_id": this.role}
+				const obj = {name: this.name, pwd: this.pwd, role_id: this.role}
 				axios.post(import.meta.env.VITE_API_URL + "/v1/roleuser", obj)
 				.then(() => {
 					this.getUserRoles();
@@ -140,7 +140,7 @@ export default {
 					console.log(error);
 				})
 			} else {
-				const obj = {"id": this.id, "name": this.name, "pwd": this.pwd, "role_id": this.role}
+				const obj = {id: this.id, name: this.name, pwd: this.pwd}
 				axios.patch(import.meta.env.VITE_API_URL + "/v1/roleuser", obj)
 				.then(() => {
 					this.getUserRoles();

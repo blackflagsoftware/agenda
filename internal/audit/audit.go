@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS audit (
 	user_name VARCHAR(50) NULL,
 	entity VARCHAR(50) NOT NULL,
 	entity_id VARCHAR(50) NOT NULL,
-	changes JSON NOT NULL, -- may not work with sqlite
+	changed JSON NOT NULL, -- may not work with sqlite
 	created_at DATETIME NOT NULL, -- or TIMESTAMP
 	PRIMARY KEY(id)
 );
@@ -134,7 +134,7 @@ func (h AuditSQL) WriteAudit(audit Audit) {
 		h.UserID = audit.UserID
 		h.Entity = audit.Entity
 		h.EntityID = audit.EntityID
-		insertSql := `INSERT INTO audit (created_at, changes, user_id, entity, entity_id) VALUES (:created_at, :changes, :user_id, :entity, :entity_id)`
+		insertSql := `INSERT INTO audit (created_at, changed, user_id, entity, entity_id) VALUES (:created_at, :changed, :user_id, :entity, :entity_id)`
 		if _, err := h.DB.NamedExec(insertSql, h); err != nil {
 			fmt.Println("WriteAudit: error insert record", err)
 		}
