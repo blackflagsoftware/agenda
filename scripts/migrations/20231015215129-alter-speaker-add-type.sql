@@ -1,0 +1,1 @@
+alter table speaker add column speaker_type text;
