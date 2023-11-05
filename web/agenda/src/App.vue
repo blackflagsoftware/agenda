@@ -45,7 +45,7 @@ import axios from "axios"
           <v-expansion-panel title="Hymns">
             <v-expansion-panel-text>
                 <div style="margin-top:20px">
-                    <Hymns :agenda="agenda" @refresh-agenda="refreshAgenda"/>
+                    <Hymns :agenda="agenda" :hymns="hymns" @refresh-agenda="refreshAgenda"/>
                 </div>
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -59,7 +59,7 @@ import axios from "axios"
           <v-expansion-panel title="Program">
             <v-expansion-panel-text>
                 <div style="margin-top:20px">
-                    <Program :agenda="agenda" @refresh-agenda="refreshAgenda"/>
+                    <Program :agenda="agenda" :hymns="hymns" @refresh-agenda="refreshAgenda"/>
                 </div>
             </v-expansion-panel-text>
           </v-expansion-panel>
@@ -110,21 +110,26 @@ export default {
             agenda: undefined,
             showAlert: false,
             alertText: "error here",
+            hymns: [],
         }
     },
     components: {
         Login
+    },
+    mounted() {
+        this.getHymns()
     },
     methods: {
         onClick: function() {
             this.showAlert = true;
         },
         logout: function() {
-			sessionStorage.removeItem("role");
-            this.hideShowMainDiv = false;
-            this.hideShowDetailDiv = false;
-            this.hideShowAnnouncementDiv = false;
-            this.role = "";
+			sessionStorage.removeItem("role")
+            this.date = ""
+            this.hideShowMainDiv = false
+            this.hideShowDetailDiv = false
+            this.hideShowAnnouncementDiv = false
+            this.role = ""
         },
         captureRole: function(role) {
 			sessionStorage.setItem("role", role);
@@ -188,6 +193,15 @@ export default {
             }).catch(error => {
                 console.log(error);
             });
+		},
+		getHymns: function() {
+			axios.get(import.meta.env.VITE_API_URL + "/v1/hymn?sort=id")
+			.then(response => {
+				this.hymns = response.data.data;
+			})
+			.catch(error => {
+				console.log(error);
+			});
         }
     },
     computed: {

@@ -8,10 +8,11 @@ import (
 
 type (
 	Speaker struct {
-		Id       int         `db:"id" json:"id"`
-		Date     null.String `db:"date" json:"date"`
-		Position null.String `db:"position" json:"position"`
-		Name     null.String `db:"name" json:"name"`
+		Id          int         `db:"id" json:"id"`
+		Date        null.String `db:"date" json:"date"`
+		Position    null.String `db:"position" json:"position"`
+		SpeakerType null.String `db:"speaker_type" json:"speaker_type"`
+		Name        null.String `db:"name" json:"name"`
 	}
 
 	SpeakerParam struct {

@@ -3,6 +3,7 @@ package agenda
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -800,7 +801,10 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 			if strings.Contains(a.Message.String, "Trunk or Treat") {
 				pdfP.Cell(10, 5, "")
 				url := "https://docs.google.com/forms/d/e/1FAIpQLScQnrcpywkQKghfGL0YSxbb35goDF8uEBZ4qI5Re-PKZ_d2Sg/viewform"
+				r, g, b := pdfP.GetTextColor()
+				pdfP.SetTextColor(0, 0, 238)
 				pdfP.CellFormat(0, 5, "Link Here", "", 2, "", false, 0, url)
+				pdfP.SetTextColor(r, g, b)
 			}
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
@@ -839,7 +843,11 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfL.SetFont(FONT, "", 12)
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Opening Hymn:")
-	pdfP.Cellf(81, 5, "%d - %s", hymnOpening.Id, hymnOpening.Name.String)
+	r, g, b := pdfP.GetTextColor()
+	pdfP.SetTextColor(0, 0, 238)
+	fmt.Println("*** opening", hymnOpening.PdfLink.String)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnOpening.Id, hymnOpening.Name.String), "", 0, "", false, 0, hymnOpening.PdfLink.String)
+	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Opening Hymn:")
 	pdfL.Cellf(81, 5, "%d - %s", hymnOpening.Id, hymnOpening.Name.String)
@@ -878,7 +886,9 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	}
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Sacrament Hymn:")
-	pdfP.Cellf(81, 5, "%d - %s", hymnSacrament.Id, hymnSacrament.Name.String)
+	pdfP.SetTextColor(0, 0, 238)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnSacrament.Id, hymnSacrament.Name.String), "", 0, "", false, 0, hymnSacrament.PdfLink.String)
+	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Sacrament Hymn:")
 	pdfL.Cellf(81, 5, "%d - %s", hymnSacrament.Id, hymnSacrament.Name.String)
@@ -910,7 +920,7 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 		pdfL.Ln(7)
 	} else {
 		speakerPosition := 1
-		positionMapping := map[int]string{1: "1st", 2: "2nd", 3: "3rd", 4: "4th", 5: "5th"}
+		positionMapping := map[int]string{1: "1st", 2: "2nd", 3: "3rd", 4: "4th", 5: "5th", 6: "6th", 7: "7th", 8: "8th", 9: "9th", 10: "10th"}
 
 		speStor := spe.InitStorage()
 		speMgr := spe.NewManagerSpeaker(speStor)
@@ -919,44 +929,58 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			fmt.Println("printProgramProgram: getting speakers")
 			return
 		}
-		positionStr := ""
-		speaker := ""
 		for _, s := range speakers {
-			foundOther := false
-			if s.Name.String == "Intermediate Hymn" {
-				hymn := hym.Hymn{Id: int(agenda.IntermediateHymn.Int64)}
+			speakerTitle := s.SpeakerType.String
+			speakerValue := s.Name.String
+			if s.SpeakerType.String == "Speaker" {
+				speakerTitle = positionMapping[speakerPosition] + " Speaker:"
+				speakerPosition++
+			}
+			var hymn hym.Hymn
+			if s.SpeakerType.String == "Hymn" {
+				id, _ := strconv.Atoi(s.Name.String)
+				hymn = hym.Hymn{Id: int(id)}
 				if err := hymMgr.Get(&hymn); err != nil {
-					fmt.Println("printProgramProgram: getting intermediate hymn")
+					fmt.Println("printProgramProgram: getting hymn")
 					return
 				}
-				positionStr = "Intermediate Hymn:"
-				speaker = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
-				foundOther = true
+				speakerValue = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
 			}
-			if s.Name.String == "Musical Number" {
-				positionStr = "Musical Number:"
-				speaker = agenda.MusicalNumber.String
-				foundOther = true
-			}
-			if !foundOther {
-				positionStr = positionMapping[speakerPosition] + " Speaker:"
-				speakerPosition++
-				speaker = s.Name.String
-			}
+			// 	positionStr = "Intermediate Hymn:"
+			// 	speaker =
+			// 	foundOther = true
+			// }
+			// if s.Name.String == "Musical Number" {
+			// 	positionStr = "Musical Number:"
+			// 	speaker = agenda.MusicalNumber.String
+			// 	foundOther = true
+			// }
+			// if !foundOther {
+			// 	positionStr = positionMapping[speakerPosition] + " Speaker:"
+			// 	speakerPosition++
+			// 	speaker = s.Name.String
+			// }
 			pdfP.SetFont(FONT, "", 12)
 			pdfL.SetFont(FONT, "", 12)
 			pdfP.Cell(4, 5, "")
-			pdfP.Cell(38, 5, positionStr)
-			pdfP.MultiCell(0, 5, speaker, "", "", false)
+			pdfP.Cell(38, 5, speakerTitle)
+			if s.SpeakerType.String == "Hymn" {
+				pdfP.SetTextColor(0, 0, 238)
+				fmt.Println("*** hymn", hymn.PdfLink.String)
+				pdfP.CellFormat(81, 5, speakerValue, "", 0, "", false, 0, hymn.PdfLink.String)
+				pdfP.SetTextColor(r, g, b)
+			} else {
+				pdfP.MultiCell(0, 5, speakerValue, "", "", false)
+			}
 			pdfP.Ln(5)
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
-			pdfL.Cell(38, 5, positionStr)
-			pdfL.MultiCell(81, 5, speaker, "", "", false)
+			pdfL.Cell(38, 5, speakerTitle)
+			pdfL.MultiCell(81, 5, speakerValue, "", "", false)
 			pdfL.SetXY(153, resetY)
 			// pdfL.Cell(20, 5, "")
-			pdfL.Cell(38, 5, positionStr)
-			pdfL.MultiCell(0, 5, speaker, "", "", false)
+			pdfL.Cell(38, 5, speakerTitle)
+			pdfL.MultiCell(0, 5, speakerValue, "", "", false)
 			// pdfL.Ln(5)
 		}
 	}
@@ -969,7 +993,9 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfL.Ln(2)
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Closing Hymn:")
-	pdfP.Cellf(81, 5, "%d - %s", hymnClosing.Id, hymnClosing.Name.String)
+	pdfP.SetTextColor(0, 0, 238)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnClosing.Id, hymnClosing.Name.String), "", 0, "", false, 0, hymnClosing.PdfLink.String)
+	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Closing Hymn:")
 	pdfL.Cellf(81, 5, "%d - %s", hymnClosing.Id, hymnClosing.Name.String)

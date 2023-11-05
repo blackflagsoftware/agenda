@@ -62,6 +62,11 @@ func (m *ManagerSpeaker) Patch(speIn Speaker) error {
 		existingValues["position"] = spe.Position.String
 		spe.Position = speIn.Position
 	}
+	// SpeakerType
+	if speIn.SpeakerType.Valid {
+		existingValues["speaker_type"] = spe.SpeakerType.String
+		spe.SpeakerType = speIn.SpeakerType
+	}
 	// Name
 	if speIn.Name.Valid {
 		existingValues["name"] = spe.Name.String

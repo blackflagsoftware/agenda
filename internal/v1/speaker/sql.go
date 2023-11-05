@@ -26,6 +26,7 @@ func (d *SQLSpeaker) Read(spe *Speaker) error {
 			id,
 			date,
 			position,
+			speaker_type,
 			name
 		FROM speaker WHERE id = $1`
 	if errDB := d.DB.Get(spe, sqlGet, spe.Id); errDB != nil {
@@ -41,6 +42,7 @@ func (d *SQLSpeaker) ReadAll(spe *[]Speaker, param SpeakerParam) (int, error) {
 			id,
 			date,
 			position,
+			speaker_type,
 			name
 		FROM speaker
 		%s ORDER BY position`, searchStmt)
@@ -72,11 +74,13 @@ func (d *SQLSpeaker) Create(spe *Speaker) error {
 			id,
 			date,
 			position,
+			speaker_type,
 			name
 		) VALUES (
 			:id,
 			:date,
 			:position,
+			:speaker_type,
 			:name
 		)`
 	_, errDB := d.DB.NamedExec(sqlPost, spe)
@@ -92,6 +96,7 @@ func (d *SQLSpeaker) Update(spe Speaker) error {
 		UPDATE speaker SET
 			date = :date,
 			position = :position,
+			speaker_type = :speaker_type,
 			name = :name
 		WHERE id = :id`
 	if _, errDB := d.DB.NamedExec(sqlPatch, spe); errDB != nil {
