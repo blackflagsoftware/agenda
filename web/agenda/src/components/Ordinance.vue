@@ -31,37 +31,38 @@ export default {
 		"date"
 	],
 	mounted() {
-		this.getOrdinance();
+		this.getOrdinance()
 	},
 	methods: {
 		getOrdinance: function() {
 			axios.get(import.meta.env.VITE_API_URL + "/v1/ordinance/"+this.date)
 			.then(response => {
-				this.confirmation = response.data.data.confirmations;
-				this.blessing = response.data.data.blessings;
+				this.id = response.data.data.id
+				this.confirmation = response.data.data.confirmations
+				this.blessing = response.data.data.blessings
 			})
 			.catch(error => {
-				console.log(error);
+				console.log(error)
 			})
 		},
 		confirmationBlur: function() {
-			const obj = {"id": this.id, "date": this.date, "confirmations": this.confirmation}
+			const obj = {id: this.id, date: this.date, confirmations: this.confirmation}
 			axios.post(import.meta.env.VITE_API_URL + "/v1/ordinance", obj)
 			.then(response => {
-				this.id = response.data.data.id;
+				this.id = response.data.data.id
 			})
 			.catch(error => {
-				console.log(error);
+				console.log(error)
 			})
 		},
 		blessingBlur: function() {
-			const obj = {"id": this.id, "date": this.date, "blessings": this.blessing}
+			const obj = {id: this.id, date: this.date, blessings: this.blessing}
 			axios.post(import.meta.env.VITE_API_URL + "/v1/ordinance", obj)
 			.then(response => {
-				this.id = response.data.data.id;
+				this.id = response.data.data.id
 			})
 			.catch(error => {
-				console.log(error);
+				console.log(error)
 			})
 		}
 	}

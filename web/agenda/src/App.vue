@@ -146,7 +146,6 @@ export default {
                 axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/" + this.date)
                 .then(response => {
                     this.agenda = response.data.data
-                    console.log(response);
                 }).catch(error => {
                     console.log(error);
                 });

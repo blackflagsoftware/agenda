@@ -48,7 +48,7 @@ func (m *ManagerOrdinance) Post(ord *Ordinance) error {
 }
 
 func (m *ManagerOrdinance) Patch(ordIn Ordinance) error {
-	ord := &Ordinance{Id: ordIn.Id}
+	ord := &Ordinance{Date: ordIn.Date}
 	errGet := m.dataOrdinance.Read(ord)
 	if errGet != nil {
 		return errGet
