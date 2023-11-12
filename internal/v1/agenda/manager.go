@@ -578,7 +578,7 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		pdf.Cell(0, 5, "2) Turn the time over to the congregation \"We will end bearing testimonies 5 minutes to the hour.\"")
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
-		pdf.Cell(0, 5, "3) Thank all who shared their testimones")
+		pdf.Cell(0, 5, "3) Thank all who shared their testimonies")
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
 		pdf.Cell(0, 5, "4) Announce closing hymn and benediction")
@@ -598,34 +598,27 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		fmt.Println("printProgram: getting speakers")
 		return
 	}
-	positionStr := ""
-	speaker := ""
 	for _, s := range speakers {
-		foundOther := false
-		if s.Name.String == "Intermediate Hymn" {
-			hymn := hym.Hymn{Id: int(agenda.IntermediateHymn.Int64)}
+		speakerTitle := s.SpeakerType.String
+		speakerValue := s.Name.String
+		if s.SpeakerType.String == "Speaker" {
+			speakerTitle = positionMapping[speakerPosition] + " Speaker:"
+			speakerPosition++
+		}
+		var hymn hym.Hymn
+		if s.SpeakerType.String == "Hymn" {
+			id, _ := strconv.Atoi(s.Name.String)
+			hymn = hym.Hymn{Id: int(id)}
 			if err := hymMgr.Get(&hymn); err != nil {
-				fmt.Println("printProgram: getting intermediate hymn")
+				fmt.Println("printProgram: getting hymn")
 				return
 			}
-			positionStr = "Int. Hymn"
-			speaker = fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String)
-			foundOther = true
-		}
-		if s.Name.String == "Musical Number" {
-			positionStr = "Mus. Number"
-			speaker = agenda.MusicalNumber.String
-			foundOther = true
-		}
-		if !foundOther {
-			positionStr = positionMapping[speakerPosition] + " Speaker"
-			speakerPosition++
-			speaker = s.Name.String
+			speakerValue = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
 		}
 		pdf.SetFont(FONT, "", 12)
 		pdf.Cell(4, 5, "")
-		pdf.Cell(38, 5, positionStr)
-		pdf.Cell(0, 5, speaker)
+		pdf.Cell(38, 5, speakerTitle)
+		pdf.Cell(0, 5, speakerValue)
 		pdf.Ln(5)
 	}
 
@@ -946,27 +939,12 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 				}
 				speakerValue = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
 			}
-			// 	positionStr = "Intermediate Hymn:"
-			// 	speaker =
-			// 	foundOther = true
-			// }
-			// if s.Name.String == "Musical Number" {
-			// 	positionStr = "Musical Number:"
-			// 	speaker = agenda.MusicalNumber.String
-			// 	foundOther = true
-			// }
-			// if !foundOther {
-			// 	positionStr = positionMapping[speakerPosition] + " Speaker:"
-			// 	speakerPosition++
-			// 	speaker = s.Name.String
-			// }
 			pdfP.SetFont(FONT, "", 12)
 			pdfL.SetFont(FONT, "", 12)
 			pdfP.Cell(4, 5, "")
 			pdfP.Cell(38, 5, speakerTitle)
 			if s.SpeakerType.String == "Hymn" {
 				pdfP.SetTextColor(0, 0, 238)
-				fmt.Println("*** hymn", hymn.PdfLink.String)
 				pdfP.CellFormat(81, 5, speakerValue, "", 0, "", false, 0, hymn.PdfLink.String)
 				pdfP.SetTextColor(r, g, b)
 			} else {
@@ -978,10 +956,8 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			pdfL.Cell(38, 5, speakerTitle)
 			pdfL.MultiCell(81, 5, speakerValue, "", "", false)
 			pdfL.SetXY(153, resetY)
-			// pdfL.Cell(20, 5, "")
 			pdfL.Cell(38, 5, speakerTitle)
 			pdfL.MultiCell(0, 5, speakerValue, "", "", false)
-			// pdfL.Ln(5)
 		}
 	}
 	hymnClosing := hym.Hymn{Id: int(agenda.ClosingHymn.Int64)}
