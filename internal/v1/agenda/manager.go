@@ -682,19 +682,22 @@ func (m *ManagerAgenda) Publish(date string) error {
 	m.printProgramProgram(pdfP, pdfL, agenda)
 	m.printProgramAnnouncements(pdfP, pdfL, agenda)
 
-	pdfL.SetFont(FONT, "", 16)
-	pdfL.CellFormat(119, 5, "Digital Program", "", 0, "C", false, 0, "")
-	pdfL.Cell(20, 5, "")
-	pdfL.CellFormat(0, 5, "Digital Program", "", 2, "C", false, 0, "")
-	pdfL.Ln(5)
-	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
-	pdfL.ImageOptions(qrCodePath, 52, pdfL.GetY(), 32, 32, false, gofpdf.ImageOptions{}, 0, "")
-	pdfL.ImageOptions(qrCodePath, 193, pdfL.GetY(), 32, 32, false, gofpdf.ImageOptions{}, 0, "")
-	pdfL.Ln(53)
 	pdfL.SetFont(FONT, "", 12)
-	pdfL.CellFormat(119, 5, "(this code will be reused every week)", "", 0, "C", false, 0, "")
+	pdfY := pdfL.GetY()
+	pdfL.Ln(12)
 	pdfL.Cell(20, 5, "")
-	pdfL.CellFormat(0, 5, "(this code will be reused every week)", "", 2, "C", false, 0, "")
+	pdfL.CellFormat(86, 5, "Digital Program", "", 0, "", false, 0, "")
+	pdfL.Cell(52, 5, "")
+	pdfL.CellFormat(86, 5, "Digital Program", "", 2, "", false, 0, "")
+	pdfL.SetFont(FONT, "", 8)
+	pdfL.Ln(1)
+	pdfL.Cell(20, 5, "")
+	pdfL.CellFormat(86, 4, "(this code will be reused every week)", "", 0, "", false, 0, "")
+	pdfL.Cell(52, 5, "")
+	pdfL.CellFormat(86, 4, "(this code will be reused every week)", "", 2, "", false, 0, "")
+	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
+	pdfL.ImageOptions(qrCodePath, 86, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 226, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
 
 	errQr := pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thward-program-qr.pdf")
 	if errQr != nil {
@@ -780,40 +783,45 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		pdfP.SetFont(FONT, "U", 12)
 		pdfL.SetFont(FONT, "U", 16)
 		pdfP.Cell(34, 5, "Announcements:")
-		pdfL.CellFormat(119, 12, "Announcements", "", 0, "TC", false, 0, "")
+		pdfP.Ln(3)
+		pdfL.CellFormat(119, 5, "Announcements", "", 0, "TC", false, 0, "")
 		pdfL.Cell(20, 5, "")
-		pdfL.CellFormat(0, 12, "Announcements", "", 2, "TC", false, 0, "")
+		pdfL.CellFormat(0, 5, "Announcements", "", 2, "TC", false, 0, "")
 		pdfP.SetFont(FONT, "", 12)
 		pdfL.SetFont(FONT, "", 12)
-
+		noOfChars := 0
 		for _, a := range announcements {
-			pdfP.Ln(6)
-			pdfL.Ln(6)
-			pdfP.Cell(4, 5, "")
-			pdfP.MultiCell(0, 5, a.Message.String, "", "", false)
-			if strings.Contains(a.Message.String, "Trunk or Treat") {
-				pdfP.Cell(10, 5, "")
-				url := "https://docs.google.com/forms/d/e/1FAIpQLScQnrcpywkQKghfGL0YSxbb35goDF8uEBZ4qI5Re-PKZ_d2Sg/viewform"
-				r, g, b := pdfP.GetTextColor()
-				pdfP.SetTextColor(0, 0, 238)
-				pdfP.CellFormat(0, 5, "Link Here", "", 2, "", false, 0, url)
-				pdfP.SetTextColor(r, g, b)
+			noOfChars += len(a.Message.String)
+		}
+		fontSize := 12.0
+		fontWidth := 2.15
+		fontSpace := 5.0
+		for {
+			perCharWidth := int(110 / fontWidth)
+			noOfLines := int(noOfChars/perCharWidth) + 2
+			totalY := float64(noOfLines) * fontSpace
+			if totalY > 150.0 {
+				fontSize -= 1.0
+				fontSpace -= 0.5
+				pdfL.SetFont(FONT, "", fontSize)
+				continue
 			}
+			break
+		}
+		for _, a := range announcements {
+			pdfP.Ln(3)
+			pdfL.Ln(3)
+			pdfP.Cell(4, fontSpace, "")
+			pdfP.MultiCell(0, fontSpace, a.Message.String, "", "", false)
 			resetY := pdfL.GetY()
-			pdfL.Cell(4, 5, "")
-			pdfL.MultiCell(114, 5, a.Message.String, "", "", false)
+			pdfL.Cell(4, fontSpace, "")
+			pdfL.MultiCell(114, fontSpace, a.Message.String, "", "", false)
 			pdfL.SetXY(153, resetY)
-			pdfL.MultiCell(114, 5, a.Message.String, "", "", false)
-			if strings.Contains(a.Message.String, "Trunk or Treat") {
-				qrCodePath := config.DocumentDir + "/assets/trunk_treat.png"
-				pdfL.ImageOptions(qrCodePath, 16, pdfL.GetY(), 24, 24, false, gofpdf.ImageOptions{}, 0, "")
-				pdfL.ImageOptions(qrCodePath, 154, pdfL.GetY(), 24, 24, false, gofpdf.ImageOptions{}, 0, "")
-				pdfL.Ln(24)
-			}
+			pdfL.MultiCell(114, fontSpace, a.Message.String, "", "", false)
 		}
 	}
-	pdfP.Ln(10)
-	pdfL.Ln(10)
+	pdfP.Ln(6)
+	pdfL.Ln(6)
 }
 
 func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf, agenda *Agenda) {
@@ -837,8 +845,9 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Opening Hymn:")
 	r, g, b := pdfP.GetTextColor()
-	pdfP.SetTextColor(0, 0, 238)
-	fmt.Println("*** opening", hymnOpening.PdfLink.String)
+	if hymnOpening.PdfLink.String != "" {
+		pdfP.SetTextColor(0, 0, 238)
+	}
 	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnOpening.Id, hymnOpening.Name.String), "", 0, "", false, 0, hymnOpening.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
@@ -879,7 +888,9 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	}
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Sacrament Hymn:")
-	pdfP.SetTextColor(0, 0, 238)
+	if hymnSacrament.PdfLink.String != "" {
+		pdfP.SetTextColor(0, 0, 238)
+	}
 	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnSacrament.Id, hymnSacrament.Name.String), "", 0, "", false, 0, hymnSacrament.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
@@ -944,13 +955,15 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			pdfP.Cell(4, 5, "")
 			pdfP.Cell(38, 5, speakerTitle)
 			if s.SpeakerType.String == "Hymn" {
-				pdfP.SetTextColor(0, 0, 238)
-				pdfP.CellFormat(81, 5, speakerValue, "", 0, "", false, 0, hymn.PdfLink.String)
+				if hymn.PdfLink.String != "" {
+					pdfP.SetTextColor(0, 0, 238)
+				}
+				pdfP.CellFormat(81, 5, speakerValue, "", 1, "", false, 0, hymn.PdfLink.String)
 				pdfP.SetTextColor(r, g, b)
 			} else {
 				pdfP.MultiCell(0, 5, speakerValue, "", "", false)
 			}
-			pdfP.Ln(5)
+			pdfP.Ln(1)
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, 5, "")
 			pdfL.Cell(38, 5, speakerTitle)
@@ -969,7 +982,9 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfL.Ln(2)
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Closing Hymn:")
-	pdfP.SetTextColor(0, 0, 238)
+	if hymnClosing.PdfLink.String != "" {
+		pdfP.SetTextColor(0, 0, 238)
+	}
 	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnClosing.Id, hymnClosing.Name.String), "", 0, "", false, 0, hymnClosing.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
