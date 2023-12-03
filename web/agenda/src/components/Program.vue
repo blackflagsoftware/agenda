@@ -77,7 +77,7 @@ export default {
 	name: "Program",
 	data() {
 		return {
-      fastSunday: false,
+     	fastSunday: false,
 			modalDialog: false,
 			modalDelete: false,
 			modalTitle: "",
@@ -107,7 +107,7 @@ export default {
 		refreshAgenda: null,
 	},
 	mounted() {
-		this.fastSunday = this.localAgenda.fastSunday
+		this.fastSunday = this.localAgenda.fast_sunday
 		this.getSpeakers()
 	},
 	methods: {
@@ -121,7 +121,7 @@ export default {
 			})
 		},
 		clickFastSunday: function() {
-			const obj = {date: this.localAgenda.date, fastSunday: this.fastSunday}
+			const obj = {date: this.localAgenda.date, fast_sunday: this.fastSunday}
 			this.$emit("refreshAgenda", obj)
 		},
 		clickAddSpeaker: function() {
@@ -226,7 +226,7 @@ export default {
 		agenda: {
 			handler(newAgenda, oldAgenda) {
 				this.localAgenda = newAgenda;
-				this.fastSunday = this.localAgenda.fastSunday;
+				this.fastSunday = this.localAgenda.fast_sunday;
 				this.getSpeakers();
 			},
 			immediate: true

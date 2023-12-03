@@ -1,6 +1,7 @@
 package agenda
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -113,6 +114,7 @@ func (h *RestAgenda) Patch(c echo.Context) error {
 		bindErr := ae.BindError(err)
 		return c.JSON(bindErr.StatusCode, util.NewOutput(c, bindErr.BodyError(), &bindErr, nil))
 	}
+	fmt.Printf("**** Patch **** %+v\n", age)
 	if err := h.managerAgenda.Patch(age); err != nil {
 		apiError := err.(ae.ApiError)
 		be := apiError.BodyError()

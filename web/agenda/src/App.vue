@@ -141,10 +141,12 @@ export default {
             this.agenda = agenda;
         },
         refreshAgenda: function(obj) {
+            console.log("going to patch agenda:", obj)
             axios.patch(import.meta.env.VITE_API_URL + "/v1/agenda", obj)
             .then(() => {
                 axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/" + this.date)
                 .then(response => {
+                    console.log("*** agenda:", response.data.data)
                     this.agenda = response.data.data
                 }).catch(error => {
                     console.log(error);
