@@ -18,7 +18,7 @@ import axios from "axios"
       <Login @capture-role="captureRole" :role="role" @logout="logout"/>
     </div>
     <div v-if="hideShowMainDiv" style="margin-left:20px; margin-right:20px;">
-        <Date @capture-agenda="captureAgenda"/>
+        <Date :date="date" @capture-agenda="captureAgenda"/>
     </div>
     <div v-if="hideShowAnnouncementDiv" style="margin-left:20px; margin-right:20px;">
         <h3 style="margin-bottom:10px; margin-top:20px;">Announcements</h3>
@@ -117,6 +117,15 @@ export default {
         Login
     },
     mounted() {
+        const roleStorage = localStorage.getItem("role")
+        if (roleStorage !== null) {
+            this.role = roleStorage
+        }
+        const agendaStorage = localStorage.getItem("agenda")
+        if (agendaStorage !== null) {
+            this.agenda = JSON.parse(agendaStorage)
+            this.date = this.agenda.date
+        }
         this.getHymns()
     },
     methods: {
@@ -124,7 +133,8 @@ export default {
             this.showAlert = true;
         },
         logout: function() {
-			sessionStorage.removeItem("role")
+			localStorage.removeItem("role")
+            localStorage.removeItem("agenda")
             this.date = ""
             this.hideShowMainDiv = false
             this.hideShowDetailDiv = false
@@ -132,21 +142,20 @@ export default {
             this.role = ""
         },
         captureRole: function(role) {
-			sessionStorage.setItem("role", role);
+			localStorage.setItem("role", role);
             this.role = role;
         },
         captureAgenda: function(agenda) {
+            localStorage.setItem("agenda", JSON.stringify(agenda))
             this.date = agenda.date;
             this.fast_sunday = agenda.fast_sunday;
             this.agenda = agenda;
         },
         refreshAgenda: function(obj) {
-            console.log("going to patch agenda:", obj)
             axios.patch(import.meta.env.VITE_API_URL + "/v1/agenda", obj)
             .then(() => {
                 axios.get(import.meta.env.VITE_API_URL + "/v1/agenda/" + this.date)
                 .then(response => {
-                    console.log("*** agenda:", response.data.data)
                     this.agenda = response.data.data
                 }).catch(error => {
                     console.log(error);
