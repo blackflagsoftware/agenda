@@ -26,7 +26,8 @@ func (d *SQLAnnouncement) Read(ann *Announcement) error {
 			id,
 			date,
 			message,
-			pulpit
+			pulpit,
+			url_link
 		FROM announcement where id = $1`
 	if errDB := d.DB.Get(ann, sqlGet, ann.Id); errDB != nil {
 		return ae.DBError("Announcement Get: unable to get record.", errDB)
@@ -41,7 +42,8 @@ func (d *SQLAnnouncement) ReadAll(ann *[]Announcement, param AnnouncementParam) 
 			id,
 			date,
 			message,
-			pulpit
+			pulpit,
+			url_link
 		FROM announcement`)
 	// %s`, searchStmt)
 	sqlSearch = d.DB.Rebind(sqlSearch)
@@ -72,12 +74,14 @@ func (d *SQLAnnouncement) Create(ann *Announcement) error {
 			id,
 			date,
 			message,
-			pulpit
+			pulpit,
+			url_link
 		) VALUES (
 			:id,
 			:date,
 			:message,
-			:pulpit
+			:pulpit,
+			:url_link
 		)`
 	_, errDB := d.DB.NamedExec(sqlPost, ann)
 	if errDB != nil {
@@ -92,7 +96,8 @@ func (d *SQLAnnouncement) Update(ann Announcement) error {
 		UPDATE announcement SET
 			date = :date,
 			message = :message,
-			pulpit = :pulpit
+			pulpit = :pulpit,
+			url_link = :url_link
 		WHERE id = :id`
 	if _, errDB := d.DB.NamedExec(sqlPatch, ann); errDB != nil {
 		return ae.DBError("Announcement Patch: unable to update record.", errDB)

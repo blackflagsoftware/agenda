@@ -43,7 +43,12 @@ type (
 	}
 )
 
+var (
+	qrCodes []util.QrImage
+)
+
 func NewManagerAgenda(cage DataAgendaAdapter) *ManagerAgenda {
+	qrCodes = []util.QrImage{}
 	aw := a.AuditInit()
 	return &ManagerAgenda{dataAgenda: cage, auditWriter: aw}
 }
@@ -677,6 +682,7 @@ func (m *ManagerAgenda) Publish(date string) error {
 	pdfP.AddPage()
 	pdfL := gofpdf.New("L", "mm", "Letter", "")
 	pdfL.AddPage()
+	pdfL.SetAutoPageBreak(true, 10)
 	m.printProgramHeader(dateStr, pdfP, pdfL)
 	m.printProgramPersons(pdfP, pdfL, agenda)
 	m.printProgramProgram(pdfP, pdfL, agenda)
@@ -698,6 +704,12 @@ func (m *ManagerAgenda) Publish(date string) error {
 	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
 	pdfL.ImageOptions(qrCodePath, 86, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
 	pdfL.ImageOptions(qrCodePath, 226, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
+	if pdfL.Err() {
+		fmt.Println(pdfL.Error())
+	}
+	if pdfP.Err() {
+		fmt.Println(pdfP.Error())
+	}
 
 	errQr := pdfP.OutputFileAndClose(config.DocumentDir + "/documents/" + "11thward-program-qr.pdf")
 	if errQr != nil {
@@ -707,6 +719,11 @@ func (m *ManagerAgenda) Publish(date string) error {
 	if errProgram != nil {
 		fmt.Println("Error saving Program file", errProgram)
 	}
+	// clean up qr codes
+	for _, q := range qrCodes {
+		q.Close()
+	}
+	qrCodes = []util.QrImage{}
 	return nil
 }
 
@@ -813,11 +830,35 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 			pdfL.Ln(3)
 			pdfP.Cell(4, fontSpace, "")
 			pdfP.MultiCell(0, fontSpace, a.Message.String, "", "", false)
+			if a.UrlLink.String != "" {
+				pdfP.Cell(4, fontSpace, "")
+				r, g, b := pdfP.GetTextColor()
+				pdfP.SetTextColor(0, 0, 238)
+				pdfP.CellFormat(0, 5, "Link", "", 1, "", false, 0, a.UrlLink.String)
+				pdfP.SetTextColor(r, g, b)
+			}
 			resetY := pdfL.GetY()
 			pdfL.Cell(4, fontSpace, "")
-			pdfL.MultiCell(114, fontSpace, a.Message.String, "", "", false)
+			width := 114.0
+			var qrImage *util.QrImage
+			if a.UrlLink.String != "" {
+				width = 98.0
+				qrImage = util.NewQrImage(a.UrlLink.String)
+				qrCodes = append(qrCodes, *qrImage)
+			}
+			pdfL.MultiCell(width, fontSpace, a.Message.String, "", "", false)
+			if a.UrlLink.String != "" {
+				if qrImage != nil && qrImage.Error == nil {
+					pdfL.ImageOptions(qrImage.Name, 114, resetY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
+				}
+			}
 			pdfL.SetXY(153, resetY)
-			pdfL.MultiCell(114, fontSpace, a.Message.String, "", "", false)
+			pdfL.MultiCell(width, fontSpace, a.Message.String, "", "", false)
+			if a.UrlLink.String != "" {
+				if qrImage != nil && qrImage.Error == nil {
+					pdfL.ImageOptions(qrImage.Name, 252, resetY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
+				}
+			}
 		}
 	}
 	pdfP.Ln(6)
@@ -829,7 +870,6 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	hymMgr := hym.NewManagerHymn(hymStor)
 	hymnOpening := hym.Hymn{Id: int(agenda.OpeningHymn.Int64)}
 	if err := hymMgr.Get(&hymnOpening); err != nil {
-		fmt.Println("printOpening: getting opening hymn")
 		return
 	}
 	pdfP.SetFont(FONT, "U", 12)

@@ -11,6 +11,7 @@ type (
 		Id      int         `db:"id" json:"id"`
 		Date    null.String `db:"date" json:"date"`
 		Message null.String `db:"message" json:"message"`
+		UrlLink null.String `db:"url_link" json:"url_link"`
 		Pulpit  null.Bool   `db:"pulpit" json:"pulpit"`
 	}
 

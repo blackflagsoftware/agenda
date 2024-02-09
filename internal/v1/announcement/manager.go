@@ -67,6 +67,11 @@ func (m *ManagerAnnouncement) Patch(annIn Announcement) error {
 		existingValues["pulpit"] = ann.Pulpit.Bool
 		ann.Pulpit = annIn.Pulpit
 	}
+	// UrlLink
+	if annIn.UrlLink.Valid {
+		existingValues["url_link"] = ann.UrlLink.String
+		ann.UrlLink = annIn.UrlLink
+	}
 	if err := m.dataAnnouncement.Update(*ann); err != nil {
 		return err
 	}
