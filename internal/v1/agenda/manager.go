@@ -689,8 +689,8 @@ func (m *ManagerAgenda) Publish(date string) error {
 	m.printProgramAnnouncements(pdfP, pdfL, agenda)
 
 	pdfL.SetFont(FONT, "", 12)
-	pdfY := pdfL.GetY()
 	pdfL.Ln(12)
+	pdfY := pdfL.GetY()
 	pdfL.Cell(20, 5, "")
 	pdfL.CellFormat(86, 5, "Digital Program", "", 0, "", false, 0, "")
 	pdfL.Cell(52, 5, "")
@@ -809,6 +809,9 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		noOfChars := 0
 		for _, a := range announcements {
 			noOfChars += len(a.Message.String)
+			if a.UrlLink.String != "" {
+				noOfChars += 100
+			}
 		}
 		fontSize := 12.0
 		fontWidth := 2.15
@@ -861,6 +864,9 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 				if qrImage != nil && qrImage.Error == nil {
 					pdfL.ImageOptions(qrImage.Name, 252, resetY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
 				}
+			}
+			if a.UrlLink.String != "" {
+				pdfL.Ln(10)
 			}
 		}
 	}

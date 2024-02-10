@@ -27,7 +27,7 @@ func (q *QrImage) Create(link string) {
 	q.Image, q.Error = qrcode.Encode(link, qrcode.Medium, 32)
 	if q.Error == nil {
 		name := GenerateRandomString(8)
-		q.Name = config.DocumentDir + "/assets/" + name + ".jpg"
+		q.Name = config.DocumentDir + "/documents/" + name + ".jpg"
 		img, _, err := image.Decode(bytes.NewReader(q.Image))
 		if err != nil {
 			q.Error = err
