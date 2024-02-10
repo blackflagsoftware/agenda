@@ -702,8 +702,8 @@ func (m *ManagerAgenda) Publish(date string) error {
 	pdfL.Cell(52, 5, "")
 	pdfL.CellFormat(86, 4, "(this code will be reused every week)", "", 2, "", false, 0, "")
 	qrCodePath := config.DocumentDir + "/assets/11thward-program-qr.png"
-	pdfL.ImageOptions(qrCodePath, 86, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
-	pdfL.ImageOptions(qrCodePath, 226, pdfY, 32, 32, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 86, pdfY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
+	pdfL.ImageOptions(qrCodePath, 226, pdfY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
 	if pdfL.Err() {
 		fmt.Println(pdfL.Error())
 	}
@@ -850,6 +850,9 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 			if a.UrlLink.String != "" {
 				if qrImage != nil && qrImage.Error == nil {
 					pdfL.ImageOptions(qrImage.Name, 114, resetY, 16, 16, false, gofpdf.ImageOptions{}, 0, "")
+				}
+				if qrImage.Error != nil {
+					fmt.Println("**** Image error: ", qrImage.Error)
 				}
 			}
 			pdfL.SetXY(153, resetY)
