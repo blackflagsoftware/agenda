@@ -192,6 +192,7 @@ func (d *SQLAgenda) Update(age Agenda) error {
 }
 
 func (d *SQLAgenda) Delete(age *Agenda) error {
+	d.deleteRelatedRecords(age)
 	sqlDelete := `
 		DELETE FROM agenda WHERE date = $1`
 	if _, errDB := d.DB.Exec(sqlDelete, age.Date); errDB != nil {
@@ -210,4 +211,14 @@ func (d *SQLAgenda) Check(age *Agenda) error {
 		return fmt.Errorf("Record exists")
 	}
 	return nil
+}
+
+func (d *SQLAgenda) deleteRelatedRecords(age *Agenda) {
+	tables := []string{"ward_business_rel", "ward_business_sus", "bishop_business", "new_member", "ordinance", "speaker", "visitor"}
+	for _, table := range tables {
+		sqlDelete := fmt.Sprintf("DELETE FROM %s WHERE date = $1", table)
+		if _, err := d.DB.Exec(sqlDelete, age.Date); err != nil {
+			fmt.Printf("unable to remove record(s) for table: %s; for date: %s", table, age.Date)
+		}
+	}
 }

@@ -11,6 +11,11 @@ import { getTransitionRawChildren } from "vue";
 				<v-card>
 					<v-list max-height="300" density="compact" :items="users" item-title="name" item-value="id" @click:select="roleUserListClick"></v-list>
 				</v-card>
+				<div style="margin-top:80px">
+					<h4>Agenda's</h4>
+					<v-list :items="agendas" v-model:selected="selected_agendas" select-strategy="independent" border="true" item-title="date" item-value="date"></v-list>
+					<v-btn @click="agendasDeleteClick" :disabled="disableAgendasDelete" color="red">Delete</v-btn>
+				</div>
 			</v-col>
 			<v-col cols="12" md="5">
 				<v-form>
@@ -60,6 +65,8 @@ export default {
 		return {
 			users: [],
 			roles: [],
+			agendas: [],
+			selected_agendas: [],
 			new: false,
 			name: "",
 			pwd: "",
@@ -81,6 +88,7 @@ export default {
 		this.getUserRoles();
 		this.getRoles();
 		this.getDefaults();
+		this.getAgendas();
 	},
 	methods: {
 		getUserRoles: function() {
@@ -154,9 +162,19 @@ export default {
 				})
 			}
 		},
+		agendasDeleteClick: function() {
+			var deletePromises = []
+			for (var i = 0; i < this.selected_agendas.length; i++) {
+				const url = import.meta.env.VITE_API_URL + "/v1/agenda/"+ this.selected_agendas[i]
+				deletePromises.push(axios.delete(url).catch(error => {console.log(error)}))
+			}
+			axios.all(deletePromises).then(() => {
+				this.getAgendas()
+			})
+		},
 		getDefaults: function() {
 			axios.get(import.meta.env.VITE_API_URL + "/v1/defaultcalling/1")
-            .then((response) => {
+            .then(response => {
 				const b = response.data.data;
 				this.bishop_default = b.bishop;
 				this.bishop_1st_default = b.b_1st;
@@ -171,6 +189,15 @@ export default {
 			})
 			.catch(error => {
 				console.log(error);
+			})
+		},
+		getAgendas: function() {
+			axios.get(import.meta.env.VITE_API_URL + "/v1/agenda")
+			.then(response => {
+				this.agendas = response.data.data
+			})
+			.catch(error => {
+				console.log(error)
 			})
 		},
 		defaultUpdate: function(obj) {
@@ -224,6 +251,9 @@ export default {
 	computed: {
 		disableUserRoleSave() {
 			return (this.name !== "" && this.pwd !== "" && this.role !== "") ? false : true;
+		},
+		disableAgendasDelete() {
+			return this.selected_agendas.length === 0 ? true : false;
 		}
 	}
 }
