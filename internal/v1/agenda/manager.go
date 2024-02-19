@@ -810,7 +810,8 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		for _, a := range announcements {
 			noOfChars += len(a.Message.String)
 			if a.UrlLink.String != "" {
-				noOfChars += 100
+				noOfChars += 140
+				fmt.Printf("*** after: %d\n", noOfChars)
 			}
 		}
 		fontSize := 12.0
@@ -818,12 +819,19 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		fontSpace := 5.0
 		for {
 			perCharWidth := int(110 / fontWidth)
+			fmt.Printf("*** perCharWidth: %d\n", perCharWidth)
 			noOfLines := int(noOfChars/perCharWidth) + 2
+			fmt.Printf("*** noOfLines: %d\n", noOfLines)
 			totalY := float64(noOfLines) * fontSpace
-			if totalY > 150.0 {
+			fmt.Printf("*** calculated Y: %2.f\n", totalY)
+			if totalY >= 150.0 {
 				fontSize -= 1.0
 				fontSpace -= 0.5
 				pdfL.SetFont(FONT, "", fontSize)
+				if pdfL.Err() {
+					fmt.Println("**** An error occured: ", pdfL.Error())
+				}
+				fmt.Printf("**** setting new font size: %2.f\n", fontSize)
 				continue
 			}
 			break
