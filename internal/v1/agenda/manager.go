@@ -916,8 +916,12 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfP.Ln(5)
 	pdfL.Ln(5)
 	pdfP.Cell(4, 5, "")
+	invocation := agenda.Invocation.String
+	if invocation == "" {
+		invocation = "TBA"
+	}
 	pdfP.Cell(38, 5, "Invocation:")
-	pdfP.Cell(0, 5, agenda.Invocation.String)
+	pdfP.Cell(0, 5, invocation)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Invocation:")
 	pdfL.Cell(81, 5, agenda.Invocation.String)
@@ -1054,7 +1058,11 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfL.Ln(5)
 	pdfP.Cell(4, 5, "")
 	pdfP.Cell(38, 5, "Benediction:")
-	pdfP.Cell(0, 5, agenda.Benediction.String)
+	benediction := agenda.Benediction.String
+	if benediction == "" {
+		benediction = "TBA"
+	}
+	pdfP.Cell(0, 5, benediction)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Benediction:")
 	pdfL.Cell(81, 5, agenda.Benediction.String)
