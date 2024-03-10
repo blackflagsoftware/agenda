@@ -353,7 +353,7 @@ func (m *ManagerAgenda) printOpening(pdf *gofpdf.Fpdf, agenda *Agenda) (hymMgr *
 	}
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(30, 5, "Opening Hymn:")
-	pdf.SetFont(FONT, "B", 12)
+	pdf.SetFont(FONT, "B", calculateHymnSize(hymn.Name.String, 12))
 	pdf.Cell(78, 5, fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String))
 
 	pdf.SetFont(FONT, "", 12)
@@ -643,7 +643,7 @@ func (m *ManagerAgenda) printClosing(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 	}
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(30, 5, "Closing Hymn:")
-	pdf.SetFont(FONT, "B", 12)
+	pdf.SetFont(FONT, "B", calculateHymnSize(hymn.Name.String, 12))
 	pdf.Cell(78, 5, fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String))
 
 	pdf.SetFont(FONT, "", 12)
@@ -1072,3 +1072,17 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	pdfP.Ln(8)
 	pdfL.Ln(8)
 }
+
+func calculateHymnSize(hymnStr string, size float64) float64 {
+	if len(hymnStr) > 32 && len(hymnStr) <= 38 {
+		size = 11
+	}
+	if len(hymnStr) > 38 {
+		size = 9
+	}
+	return size
+}
+
+// #45 - Lead Me into Life Eternal
+// Lord, Dismiss Us with Thy Blessing
+// Hail to the Brightness of Zion's Glad Morning

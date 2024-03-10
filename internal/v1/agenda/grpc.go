@@ -69,7 +69,7 @@ func (a *AgendaGrpc) PostAgenda(ctx context.Context, in *p.Agenda) (*p.AgendaRes
 	}
 	var errTranslate error
 	response.Agenda, errTranslate = translateOut(age)
-	if err != nil {
+	if errTranslate != nil {
 		return response, errTranslate
 	}
 	response.Result.Success = true
