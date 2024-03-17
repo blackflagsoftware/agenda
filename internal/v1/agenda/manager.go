@@ -839,10 +839,10 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 		for _, a := range announcements {
 			pdfP.Ln(3)
 			pdfL.Ln(3)
-			pdfP.Cell(4, fontSpace, "")
-			pdfP.MultiCell(0, fontSpace, a.Message.String, "", "", false)
+			pdfP.Cell(4, 5.0, "")
+			pdfP.MultiCell(0, 5.0, a.Message.String, "", "", false)
 			if a.UrlLink.String != "" {
-				pdfP.Cell(4, fontSpace, "")
+				pdfP.Cell(4, 5.0, "")
 				r, g, b := pdfP.GetTextColor()
 				pdfP.SetTextColor(0, 0, 238)
 				pdfP.CellFormat(0, 5, "Link", "", 1, "", false, 0, a.UrlLink.String)
