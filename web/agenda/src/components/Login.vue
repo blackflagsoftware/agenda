@@ -45,7 +45,8 @@ export default {
 	methods: {
 		login: function() {
 			this.error = false;
-			axios.get(import.meta.env.VITE_API_URL + "/v1/roleuser/login/" + this.user + "/pwd/" + this.pwd)
+			let user = this.user.toLowerCase()
+			axios.get(import.meta.env.VITE_API_URL + "/v1/roleuser/login/" + user + "/pwd/" + this.pwd)
 			.then(response => {
 				this.$emit("captureRole", response.data.data.role)
 				this.user = "";
