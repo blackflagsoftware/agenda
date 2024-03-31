@@ -978,7 +978,7 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 		// fs_musical_number used as a pre-testimony meeting musical number
 		if agenda.FSMusicalNumber.String != "" {
 			pdfP.Cell(4, 5, "")
-			pdfP.Cell(0, 5, fmt.Sprintf("Muscial Number: %s", agenda.FSMusicalNumber.String))
+			pdfP.MultiCell(0, 5, fmt.Sprintf("Muscial Number: %s", agenda.FSMusicalNumber.String), "", "", false)
 			pdfP.Ln(7)
 			pdfL.Cell(4, 5, "")
 			resetY := pdfL.GetY()
