@@ -29,6 +29,7 @@ type (
 		NewMembers       null.Bool   `db:"new_members" json:"new_members"`
 		Ordinance        null.Bool   `db:"ordinance" json:"ordinance"`
 		Fastsunday       null.Bool   `db:"fast_sunday" json:"fast_sunday"`
+		FSMusicalNumber  null.String `db:"fs_musical_number" json:"fs_musical_number"`
 		AgendaPublished  null.Bool   `db:"agenda_published" json:"agenda_published"`
 		ProgramPublished null.Bool   `db:"program_published" json:"program_published"`
 	}

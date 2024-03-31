@@ -44,6 +44,7 @@ func (d *SQLAgenda) Read(age *Agenda) error {
 			new_members,
 			ordinance,
 			fast_sunday,
+			fs_musical_number,
 			agenda_published,
 			program_published
 		FROM agenda WHERE date = $1`
@@ -78,6 +79,7 @@ func (d *SQLAgenda) ReadAll(age *[]Agenda, param AgendaParam) (int, error) {
 			new_members,
 			ordinance,
 			fast_sunday,
+			fs_musical_number,
 			agenda_published,
 			program_published
 		FROM agenda
@@ -124,6 +126,7 @@ func (d *SQLAgenda) Create(age *Agenda) error {
 			new_members,
 			ordinance,
 			fast_sunday,
+			fs_musical_number,
 			agenda_published,
 			program_published
 		) VALUES (
@@ -148,6 +151,7 @@ func (d *SQLAgenda) Create(age *Agenda) error {
 			:new_members,
 			:ordinance,
 			:fast_sunday,
+			:fs_musical_number,
 			:agenda_published,
 			:program_published
 		)`
@@ -182,6 +186,7 @@ func (d *SQLAgenda) Update(age Agenda) error {
 			new_members = :new_members,
 			ordinance = :ordinance,
 			fast_sunday = :fast_sunday,
+			fs_musical_number = :fs_musical_number,
 			agenda_published = :agenda_published,
 			program_published = :program_published
 		WHERE date = :date`

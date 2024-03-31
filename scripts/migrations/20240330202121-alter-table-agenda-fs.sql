@@ -1,0 +1,1 @@
+ALTER TABLE agenda ADD COLUMN fs_musical_number TEXT;
