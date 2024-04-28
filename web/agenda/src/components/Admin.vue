@@ -192,7 +192,7 @@ export default {
 			})
 		},
 		getAgendas: function() {
-			axios.get(import.meta.env.VITE_API_URL + "/v1/agenda")
+			axios.get(import.meta.env.VITE_API_URL + "/v1/agenda?sort=date")
 			.then(response => {
 				this.agendas = response.data.data
 			})

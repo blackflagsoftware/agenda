@@ -59,7 +59,7 @@ func (m *ManagerAgenda) Get(age *Agenda) error {
 }
 
 func (m *ManagerAgenda) Search(age *[]Agenda, param AgendaParam) (int, error) {
-	param.Param.CalculateParam("presiding", map[string]string{"presiding": "presiding", "conducting": "conducting", "organist": "organist", "chorister": "chorister", "newsletter": "newsletter", "intermediate_hymn": "intermediate_hymn", "musical_number": "musical_number", "closing_hymn": "closing_hymn", "invocation": "invocation", "benediction": "benediction", "ward_business": "ward_business", "bishop_business": "bishop_business", "letter_read": "letter_read", "stake_business": "stake_business", "stake": "stake", "new_members": "new_members", "ordinance": "ordinance", "fast_sunday": "fast_sunday", "agenda_published": "agenda_published", "program_published": "program_published"})
+	param.Param.CalculateParam("date", map[string]string{"date": "date", "presiding": "presiding", "conducting": "conducting", "organist": "organist", "chorister": "chorister", "newsletter": "newsletter", "intermediate_hymn": "intermediate_hymn", "musical_number": "musical_number", "closing_hymn": "closing_hymn", "invocation": "invocation", "benediction": "benediction", "ward_business": "ward_business", "bishop_business": "bishop_business", "letter_read": "letter_read", "stake_business": "stake_business", "stake": "stake", "new_members": "new_members", "ordinance": "ordinance", "fast_sunday": "fast_sunday", "agenda_published": "agenda_published", "program_published": "program_published"})
 
 	return m.dataAgenda.ReadAll(age, param)
 }
