@@ -3,6 +3,7 @@ package agenda
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	ae "github.com/blackflagsoftware/agenda/internal/api_error"
 	p "github.com/blackflagsoftware/agenda/pkg/proto"
@@ -111,7 +112,8 @@ func translateOut(age *Agenda) (*p.Agenda, error) {
 	protoAgenda.Newsletter = age.Newsletter.String
 	protoAgenda.IntermediateHymn = age.IntermediateHymn.Int64
 	protoAgenda.MusicalNumber = age.MusicalNumber.String
-	protoAgenda.ClosingHymn = age.ClosingHymn.Int64
+	closingHymn, _ := strconv.Atoi(age.ClosingHymn.String)
+	protoAgenda.ClosingHymn = int64(closingHymn)
 	protoAgenda.Invocation = age.Invocation.String
 	protoAgenda.Benediction = age.Benediction.String
 	protoAgenda.WardBusiness = age.WardBusiness.Bool

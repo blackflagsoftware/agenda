@@ -51,6 +51,7 @@ import { getTransitionRawChildren } from "vue";
 							<v-text-field label="Stake Pres" variant="outlined" density="compact" v-model="stake_pres_default" @blur="defaultUpdateSPres"></v-text-field>
 							<v-text-field label="Stake 1st Counselor" variant="outlined" density="compact" v-model="stake_1st_default" @blur="defaultUpdateS1st"></v-text-field>
 							<v-text-field label="Stake 2nd Counselor" variant="outlined" density="compact" v-model="stake_2nd_default" @blur="defaultUpdateS2nd"></v-text-field>
+							<v-select label="Even Hour?" :items="['Yes', 'No']" variant="outlined" density="compact" v-model="even_hour" v-on:update:modelValue="onChangeEvenHour"></v-select>
 						</v-col>
 					</v-row>
 				</v-form>
@@ -82,6 +83,7 @@ export default {
 			stake_pres_default: "",
 			stake_1st_default: "",
 			stake_2nd_default: "",
+			even_hour: "",
 		}
 	},
 	mounted() {
@@ -186,6 +188,7 @@ export default {
 				this.stake_pres_default = b.s_pres;
 				this.stake_1st_default = b.s_1st;
 				this.stake_2nd_default = b.s_2nd;
+				this.even_hour = b.even_hour ? "Yes" : "No";
 			})
 			.catch(error => {
 				console.log(error);
@@ -246,7 +249,11 @@ export default {
 		defaultUpdateS2nd: function() {
 			const obj = {"s_2nd": this.stake_2nd_default}
 			this.defaultUpdate(obj);
-		}
+		},
+		onChangeEvenHour: function() {
+			const obj = {"even_hour": this.even_hour === "Yes" ? true : false}
+			this.defaultUpdate(obj);
+		},
 	},
 	computed: {
 		disableUserRoleSave() {

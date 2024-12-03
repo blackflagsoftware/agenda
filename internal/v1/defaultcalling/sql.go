@@ -33,7 +33,8 @@ func (d *SQLDefaultCalling) Read(def *DefaultCalling) error {
 			organist,
 			chorister,
 			newsletter,
-			stake
+			stake,
+			even_hour
 		FROM default_calling WHERE id = $1`
 	if errDB := d.DB.Get(def, sqlGet, def.Id); errDB != nil {
 		return ae.DBError("DefaultCalling Get: unable to get record.", errDB)
@@ -55,7 +56,8 @@ func (d *SQLDefaultCalling) ReadAll(def *[]DefaultCalling, param DefaultCallingP
 			organist,
 			chorister,
 			newsletter,
-			stake
+			stake,
+			even_hour
 		FROM default_calling
 		%s
 		ORDER BY %s %s`, searchStmt, param.Sort, param.Limit)
@@ -89,7 +91,8 @@ func (d *SQLDefaultCalling) Create(def *DefaultCalling) error {
 			organist,
 			chorister,
 			newsletter,
-			stake
+			stake,
+			even_hour
 		) VALUES (
 			:id,
 			:bishop,
@@ -101,7 +104,8 @@ func (d *SQLDefaultCalling) Create(def *DefaultCalling) error {
 			:organist,
 			:chorister,
 			:newsletter,
-			:stake
+			:stake,
+			:even_hour
 		)`
 	_, errDB := d.DB.NamedExec(sqlPost, def)
 	if errDB != nil {
@@ -123,7 +127,8 @@ func (d *SQLDefaultCalling) Update(def DefaultCalling) error {
 			organist = :organist,
 			chorister = :chorister,
 			newsletter = :newsletter,
-			stake = :stake
+			stake = :stake,
+			even_hour = :even_hour
 		WHERE id = :id`
 	if _, errDB := d.DB.NamedExec(sqlPatch, def); errDB != nil {
 		return ae.DBError("DefaultCalling Patch: unable to update record.", errDB)

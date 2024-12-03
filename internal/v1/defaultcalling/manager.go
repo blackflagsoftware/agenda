@@ -31,7 +31,7 @@ func (m *ManagerDefaultCalling) Get(def *DefaultCalling) error {
 }
 
 func (m *ManagerDefaultCalling) Search(def *[]DefaultCalling, param DefaultCallingParam) (int, error) {
-	param.Param.CalculateParam("organist", map[string]string{"organist": "organist", "chorister": "chorister", "newsletter": "newsletter", "stake": "stake"})
+	param.Param.CalculateParam("organist", map[string]string{"organist": "organist", "chorister": "chorister", "newsletter": "newsletter", "stake": "stake", "even_hour": "even_hour"})
 
 	return m.dataDefaultCalling.ReadAll(def, param)
 }
@@ -101,6 +101,11 @@ func (m *ManagerDefaultCalling) Patch(defIn DefaultCalling) error {
 	if defIn.Stake.Valid {
 		existingValues["stake"] = def.Stake.String
 		def.Stake = defIn.Stake
+	}
+	// EvenHour
+	if defIn.EvenHour.Valid {
+		existingValues["even_hour"] = def.EvenHour.Bool
+		def.EvenHour = defIn.EvenHour
 	}
 	if err := m.dataDefaultCalling.Update(*def); err != nil {
 		return err

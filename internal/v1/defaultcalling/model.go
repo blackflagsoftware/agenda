@@ -19,6 +19,7 @@ type (
 		Chorister  null.String `db:"chorister" json:"chorister"`
 		Newsletter null.String `db:"newsletter" json:"newsletter"`
 		Stake      null.String `db:"stake" json:"stake"`
+		EvenHour   null.Bool   `db:"even_hour" json:"even_hour"`
 	}
 
 	DefaultCallingParam struct {

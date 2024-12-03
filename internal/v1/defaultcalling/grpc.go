@@ -69,7 +69,7 @@ func (a *DefaultCallingGrpc) PostDefaultCalling(ctx context.Context, in *p.Defau
 	}
 	var errTranslate error
 	response.DefaultCalling, errTranslate = translateOut(def)
-	if err != nil {
+	if errTranslate != nil {
 		return response, errTranslate
 	}
 	response.Result.Success = true

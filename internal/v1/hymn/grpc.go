@@ -3,6 +3,7 @@ package hymn
 import (
 	"context"
 	"encoding/json"
+	"strconv"
 
 	ae "github.com/blackflagsoftware/agenda/internal/api_error"
 	p "github.com/blackflagsoftware/agenda/pkg/proto"
@@ -22,7 +23,7 @@ func NewHymnGrpc(mhym ManagerHymnAdapter) *HymnGrpc {
 func (a *HymnGrpc) GetHymn(ctx context.Context, in *p.HymnIDIn) (*p.HymnResponse, error) {
 	result := &p.Result{Success: false}
 	response := &p.HymnResponse{Result: result}
-	hym := &Hymn{Id: int(in.Id)}
+	hym := &Hymn{Id: strconv.Itoa(int(in.Id))}
 	if err := a.managerHymn.Get(hym); err != nil {
 		response.Result.Error = err.Error()
 		return response, err
@@ -69,7 +70,7 @@ func (a *HymnGrpc) PostHymn(ctx context.Context, in *p.Hymn) (*p.HymnResponse, e
 	}
 	var errTranslate error
 	response.Hymn, errTranslate = translateOut(hym)
-	if err != nil {
+	if errTranslate != nil {
 		return response, errTranslate
 	}
 	response.Result.Success = true
@@ -92,7 +93,7 @@ func (a *HymnGrpc) PatchHymn(ctx context.Context, in *p.Hymn) (*p.Result, error)
 
 func (a *HymnGrpc) DeleteHymn(ctx context.Context, in *p.HymnIDIn) (*p.Result, error) {
 	response := &p.Result{Success: false}
-	hym := &Hymn{Id: int(in.Id)}
+	hym := &Hymn{Id: strconv.Itoa(int(in.Id))}
 	if err := a.managerHymn.Delete(hym); err != nil {
 		response.Error = err.Error()
 		return response, err
@@ -103,14 +104,15 @@ func (a *HymnGrpc) DeleteHymn(ctx context.Context, in *p.HymnIDIn) (*p.Result, e
 
 func translateOut(hym *Hymn) (*p.Hymn, error) {
 	protoHymn := p.Hymn{}
-	protoHymn.Id = int64(hym.Id)
+	hymId, _ := strconv.Atoi(hym.Id)
+	protoHymn.Id = int64(hymId)
 	protoHymn.Name = hym.Name.String
 	return &protoHymn, nil
 }
 
 func translateIn(in *p.Hymn) (*Hymn, error) {
 	hym := Hymn{}
-	hym.Id = int(in.Id)
+	hym.Id = strconv.Itoa(int(in.Id))
 	hym.Name.Scan(in.Name)
 	return &hym, nil
 }

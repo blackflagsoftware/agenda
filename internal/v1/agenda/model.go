@@ -14,11 +14,11 @@ type (
 		Organist         null.String `db:"organist" json:"organist"`
 		Chorister        null.String `db:"chorister" json:"chorister"`
 		Newsletter       null.String `db:"newsletter" json:"newsletter"`
-		OpeningHymn      null.Int    `db:"opening_hymn" json:"opening_hymn"`
-		SacramentHymn    null.Int    `db:"sacrament_hymn" json:"sacrament_hymn"`
+		OpeningHymn      null.String `db:"opening_hymn" json:"opening_hymn"`
+		SacramentHymn    null.String `db:"sacrament_hymn" json:"sacrament_hymn"`
 		IntermediateHymn null.Int    `db:"intermediate_hymn" json:"intermediate_hymn"`
 		MusicalNumber    null.String `db:"musical_number" json:"musical_number"`
-		ClosingHymn      null.Int    `db:"closing_hymn" json:"closing_hymn"`
+		ClosingHymn      null.String `db:"closing_hymn" json:"closing_hymn"`
 		Invocation       null.String `db:"invocation" json:"invocation"`
 		Benediction      null.String `db:"benediction" json:"benediction"`
 		WardBusiness     null.Bool   `db:"ward_business" json:"ward_business"`

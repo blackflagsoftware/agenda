@@ -200,10 +200,12 @@ export default {
 			this.editSpeaker.name = hymnName
 		},
 		staticSpeakerName: function(name, speakerType) {
-			var hymnName = ""
 			if (speakerType === "Hymn") {
-				hymnName = this.hymns[Number(name)-1].name
-				return hymnName
+				let hymn = this.hymns.filter(function(h){
+					return h.id === name
+				})
+				if (hymn.length === 0) return ""
+				return hymn[0].name
 			}
 			return name
 		}

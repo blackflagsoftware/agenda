@@ -45,7 +45,7 @@ func TestManagerAgenda_Post(t *testing.T) {
 	}{
 		{
 			"successful",
-			&Agenda{BishopBusiness: null.NewBool(true, true), Fastsunday: null.NewBool(true, true), AgendaPublished: null.NewBool(true, true), Presiding: null.NewString("a", true), MusicalNumber: null.NewString("a", true), ClosingHymn: null.NewInt(1, true), Benediction: null.NewString("a", true), ProgramPublished: null.NewBool(true, true), Organist: null.NewString("a", true), LetterRead: null.NewBool(true, true), Stake: null.NewString("a", true), NewMembers: null.NewBool(true, true), Newsletter: null.NewString("a", true), IntermediateHymn: null.NewInt(1, true), StakeBusiness: null.NewBool(true, true), Ordinance: null.NewBool(true, true), Conducting: null.NewString("a", true), Chorister: null.NewString("a", true), Invocation: null.NewString("a", true), WardBusiness: null.NewBool(true, true)},
+			&Agenda{BishopBusiness: null.NewBool(true, true), Fastsunday: null.NewBool(true, true), AgendaPublished: null.NewBool(true, true), Presiding: null.NewString("a", true), MusicalNumber: null.NewString("a", true), ClosingHymn: null.NewString("1", true), Benediction: null.NewString("a", true), ProgramPublished: null.NewBool(true, true), Organist: null.NewString("a", true), LetterRead: null.NewBool(true, true), Stake: null.NewString("a", true), NewMembers: null.NewBool(true, true), Newsletter: null.NewString("a", true), IntermediateHymn: null.NewInt(1, true), StakeBusiness: null.NewBool(true, true), Ordinance: null.NewBool(true, true), Conducting: null.NewString("a", true), Chorister: null.NewString("a", true), Invocation: null.NewString("a", true), WardBusiness: null.NewBool(true, true)},
 			false,
 			[]*gomock.Call{mockDataAgenda.EXPECT().Create(gomock.Any()).Return(nil).AnyTimes()},
 		},

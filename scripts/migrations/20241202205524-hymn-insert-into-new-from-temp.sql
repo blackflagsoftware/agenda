@@ -1,0 +1,1 @@
+insert into hymn select id, name, pdf_name from temp_hymn;

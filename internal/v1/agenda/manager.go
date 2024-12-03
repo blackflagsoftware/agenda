@@ -3,7 +3,6 @@ package agenda
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
 	"time"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/blackflagsoftware/agenda/internal/util"
 	ann "github.com/blackflagsoftware/agenda/internal/v1/announcement"
 	bis "github.com/blackflagsoftware/agenda/internal/v1/bishopbusiness"
+	def "github.com/blackflagsoftware/agenda/internal/v1/defaultcalling"
 	hym "github.com/blackflagsoftware/agenda/internal/v1/hymn"
 	new "github.com/blackflagsoftware/agenda/internal/v1/newmember"
 	ord "github.com/blackflagsoftware/agenda/internal/v1/ordinance"
@@ -113,12 +113,12 @@ func (m *ManagerAgenda) Patch(ageIn Agenda) error {
 	}
 	// OpeningHymn
 	if ageIn.OpeningHymn.Valid {
-		existingValues["opening_hymn"] = age.OpeningHymn.Int64
+		existingValues["opening_hymn"] = age.OpeningHymn.String
 		age.OpeningHymn = ageIn.OpeningHymn
 	}
 	// SacramentHymn
 	if ageIn.SacramentHymn.Valid {
-		existingValues["sacrament_hymn"] = age.SacramentHymn.Int64
+		existingValues["sacrament_hymn"] = age.SacramentHymn.String
 		age.SacramentHymn = ageIn.SacramentHymn
 	}
 	// IntermediateHymn
@@ -133,7 +133,7 @@ func (m *ManagerAgenda) Patch(ageIn Agenda) error {
 	}
 	// ClosingHymn
 	if ageIn.ClosingHymn.Valid {
-		existingValues["closing_hymn"] = age.ClosingHymn.Int64
+		existingValues["closing_hymn"] = age.ClosingHymn.String
 		age.ClosingHymn = ageIn.ClosingHymn
 	}
 	// Invocation
@@ -213,6 +213,15 @@ func (m *ManagerAgenda) Delete(age *Agenda) error {
 }
 
 func (m *ManagerAgenda) Print(date string) error {
+	// get the default calling record
+	evenHour := true
+	defCalling := def.DefaultCalling{Id: 1}
+	defStor := def.InitStorage()
+	defMgr := def.NewManagerDefaultCalling(defStor)
+	if err := defMgr.Get(&defCalling); err != nil {
+		fmt.Printf("error: %s", err)
+	}
+	evenHour = defCalling.EvenHour.Bool
 	// get the main agenda record
 	// create the pdf struct
 	// call each section as needed
@@ -246,7 +255,7 @@ func (m *ManagerAgenda) Print(date string) error {
 	}
 
 	m.printSacrament(pdf, agenda, hymMgr)
-	m.printProgram(pdf, agenda, hymMgr)
+	m.printProgram(pdf, agenda, hymMgr, evenHour)
 	m.printClosing(pdf, agenda, hymMgr)
 	m.printPrayers(pdf)
 
@@ -346,7 +355,7 @@ func (m *ManagerAgenda) printAnnouncements(pdf *gofpdf.Fpdf, agenda *Agenda) {
 func (m *ManagerAgenda) printOpening(pdf *gofpdf.Fpdf, agenda *Agenda) (hymMgr *hym.ManagerHymn) {
 	hymStor := hym.InitStorage()
 	hymMgr = hym.NewManagerHymn(hymStor)
-	hymn := hym.Hymn{Id: int(agenda.OpeningHymn.Int64)}
+	hymn := hym.Hymn{Id: agenda.OpeningHymn.String}
 	if err := hymMgr.Get(&hymn); err != nil {
 		fmt.Println("printOpening: getting opening hymn")
 		return
@@ -354,7 +363,7 @@ func (m *ManagerAgenda) printOpening(pdf *gofpdf.Fpdf, agenda *Agenda) (hymMgr *
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(30, 5, "Opening Hymn:")
 	pdf.SetFont(FONT, "B", calculateHymnSize(hymn.Name.String, 12))
-	pdf.Cell(78, 5, fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String))
+	pdf.Cell(78, 5, fmt.Sprintf("#%s - %s", hymn.Id, hymn.Name.String))
 
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(22, 5, "Invocation:")
@@ -544,7 +553,7 @@ func (m *ManagerAgenda) printOrdinance(pdf *gofpdf.Fpdf, agenda *Agenda) {
 }
 
 func (m *ManagerAgenda) printSacrament(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn) {
-	hymn := hym.Hymn{Id: int(agenda.SacramentHymn.Int64)}
+	hymn := hym.Hymn{Id: agenda.SacramentHymn.String}
 	if err := hymMgr.Get(&hymn); err != nil {
 		fmt.Println("printSacrament: getting sacrament hymn")
 		return
@@ -552,7 +561,7 @@ func (m *ManagerAgenda) printSacrament(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr 
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(34, 5, "Sacrament Hymn:")
 	pdf.SetFont(FONT, "B", 12)
-	pdf.Cell(0, 5, fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String))
+	pdf.Cell(0, 5, fmt.Sprintf("#%s - %s", hymn.Id, hymn.Name.String))
 	pdf.Ln(5)
 
 	pdf.SetFont(FONT, "", 12)
@@ -567,7 +576,7 @@ func (m *ManagerAgenda) printSacrament(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr 
 	return
 }
 
-func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn) {
+func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn, evenHour bool) {
 	pdf.SetFont(FONT, "U", 12)
 	pdf.Cell(0, 5, "Program:")
 	pdf.Ln(5)
@@ -580,7 +589,12 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		pdf.Cell(0, 5, "1) Bare your testimony")
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
-		pdf.Cell(0, 5, "2) Turn the time over to the congregation \"We will end bearing testimonies 5 minutes to the hour.\"")
+		timeToStop := "5 mintues to the hour."
+		fmt.Println(evenHour)
+		if !evenHour {
+			timeToStop = "25 minutes after the hour."
+		}
+		pdf.Cell(0, 5, fmt.Sprintf("2) Turn the time over to the congregation \"We will end bearing testimonies %s\"", timeToStop))
 		pdf.Ln(5)
 		pdf.Cell(4, 5, "")
 		pdf.Cell(0, 5, "3) Thank all who shared their testimonies")
@@ -612,13 +626,13 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 		}
 		var hymn hym.Hymn
 		if s.SpeakerType.String == "Hymn" {
-			id, _ := strconv.Atoi(s.Name.String)
-			hymn = hym.Hymn{Id: int(id)}
+			// id, _ := strconv.Atoi(s.Name.String)
+			hymn = hym.Hymn{Id: s.Name.String}
 			if err := hymMgr.Get(&hymn); err != nil {
 				fmt.Println("printProgram: getting hymn")
 				return
 			}
-			speakerValue = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
+			speakerValue = fmt.Sprintf("%s - %s", hymn.Id, hymn.Name.String)
 		}
 		pdf.SetFont(FONT, "", 12)
 		pdf.Cell(4, 5, "")
@@ -636,7 +650,7 @@ func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 func (m *ManagerAgenda) printClosing(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn) {
 	hymStor := hym.InitStorage()
 	hymMgr = hym.NewManagerHymn(hymStor)
-	hymn := hym.Hymn{Id: int(agenda.ClosingHymn.Int64)}
+	hymn := hym.Hymn{Id: agenda.ClosingHymn.String}
 	if err := hymMgr.Get(&hymn); err != nil {
 		fmt.Println("printClosing: getting closing hymn")
 		return
@@ -644,7 +658,7 @@ func (m *ManagerAgenda) printClosing(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(30, 5, "Closing Hymn:")
 	pdf.SetFont(FONT, "B", calculateHymnSize(hymn.Name.String, 12))
-	pdf.Cell(78, 5, fmt.Sprintf("#%d - %s", hymn.Id, hymn.Name.String))
+	pdf.Cell(78, 5, fmt.Sprintf("#%s - %s", hymn.Id, hymn.Name.String))
 
 	pdf.SetFont(FONT, "", 12)
 	pdf.Cell(24, 5, "Benediction:")
@@ -885,7 +899,7 @@ func (m *ManagerAgenda) printProgramAnnouncements(pdfP *gofpdf.Fpdf, pdfL *gofpd
 func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf, agenda *Agenda) {
 	hymStor := hym.InitStorage()
 	hymMgr := hym.NewManagerHymn(hymStor)
-	hymnOpening := hym.Hymn{Id: int(agenda.OpeningHymn.Int64)}
+	hymnOpening := hym.Hymn{Id: agenda.OpeningHymn.String}
 	if err := hymMgr.Get(&hymnOpening); err != nil {
 		return
 	}
@@ -905,14 +919,14 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	if hymnOpening.PdfLink.String != "" {
 		pdfP.SetTextColor(0, 0, 238)
 	}
-	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnOpening.Id, hymnOpening.Name.String), "", 0, "", false, 0, hymnOpening.PdfLink.String)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%s - %s", hymnOpening.Id, hymnOpening.Name.String), "", 0, "", false, 0, hymnOpening.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Opening Hymn:")
-	pdfL.Cellf(81, 5, "%d - %s", hymnOpening.Id, hymnOpening.Name.String)
+	pdfL.Cellf(81, 5, "%s - %s", hymnOpening.Id, hymnOpening.Name.String)
 	pdfL.Cell(20, 5, "")
 	pdfL.Cell(38, 5, "Opening Hymn:")
-	pdfL.Cellf(0, 5, "%d - %s", hymnOpening.Id, hymnOpening.Name.String)
+	pdfL.Cellf(0, 5, "%s - %s", hymnOpening.Id, hymnOpening.Name.String)
 	pdfP.Ln(5)
 	pdfL.Ln(5)
 	pdfP.Cell(4, 5, "")
@@ -942,7 +956,7 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 		pdfP.Ln(6)
 		pdfL.Ln(7)
 	}
-	hymnSacrament := hym.Hymn{Id: int(agenda.SacramentHymn.Int64)}
+	hymnSacrament := hym.Hymn{Id: agenda.SacramentHymn.String}
 	if err := hymMgr.Get(&hymnSacrament); err != nil {
 		fmt.Println("printProgramProgram: getting sacrament hymn")
 		return
@@ -952,14 +966,14 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	if hymnSacrament.PdfLink.String != "" {
 		pdfP.SetTextColor(0, 0, 238)
 	}
-	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnSacrament.Id, hymnSacrament.Name.String), "", 0, "", false, 0, hymnSacrament.PdfLink.String)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%s - %s", hymnSacrament.Id, hymnSacrament.Name.String), "", 0, "", false, 0, hymnSacrament.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Sacrament Hymn:")
-	pdfL.Cellf(81, 5, "%d - %s", hymnSacrament.Id, hymnSacrament.Name.String)
+	pdfL.Cellf(81, 5, "%s - %s", hymnSacrament.Id, hymnSacrament.Name.String)
 	pdfL.Cell(20, 5, "")
 	pdfL.Cell(38, 5, "Sacrament Hymn:")
-	pdfL.Cellf(0, 5, "%d - %s", hymnSacrament.Id, hymnSacrament.Name.String)
+	pdfL.Cellf(0, 5, "%s - %s", hymnSacrament.Id, hymnSacrament.Name.String)
 	pdfP.Ln(5)
 	pdfL.Ln(5)
 	pdfP.Cell(4, 5, "")
@@ -1016,13 +1030,13 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			}
 			var hymn hym.Hymn
 			if s.SpeakerType.String == "Hymn" {
-				id, _ := strconv.Atoi(s.Name.String)
-				hymn = hym.Hymn{Id: int(id)}
+				// id, _ := strconv.Atoi(s.Name.String)
+				hymn = hym.Hymn{Id: s.Name.String}
 				if err := hymMgr.Get(&hymn); err != nil {
 					fmt.Println("printProgramProgram: getting hymn")
 					return
 				}
-				speakerValue = fmt.Sprintf("%d - %s", hymn.Id, hymn.Name.String)
+				speakerValue = fmt.Sprintf("%s - %s", hymn.Id, hymn.Name.String)
 			}
 			pdfP.SetFont(FONT, "", 12)
 			pdfL.SetFont(FONT, "", 12)
@@ -1047,7 +1061,7 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 			pdfL.MultiCell(0, 5, speakerValue, "", "", false)
 		}
 	}
-	hymnClosing := hym.Hymn{Id: int(agenda.ClosingHymn.Int64)}
+	hymnClosing := hym.Hymn{Id: agenda.ClosingHymn.String}
 	if err := hymMgr.Get(&hymnClosing); err != nil {
 		fmt.Println("printProgramProgram: getting closing hymn")
 		return
@@ -1059,14 +1073,14 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	if hymnClosing.PdfLink.String != "" {
 		pdfP.SetTextColor(0, 0, 238)
 	}
-	pdfP.CellFormat(81, 5, fmt.Sprintf("%d - %s", hymnClosing.Id, hymnClosing.Name.String), "", 0, "", false, 0, hymnClosing.PdfLink.String)
+	pdfP.CellFormat(81, 5, fmt.Sprintf("%s - %s", hymnClosing.Id, hymnClosing.Name.String), "", 0, "", false, 0, hymnClosing.PdfLink.String)
 	pdfP.SetTextColor(r, g, b)
 	pdfL.Cell(4, 5, "")
 	pdfL.Cell(38, 5, "Closing Hymn:")
-	pdfL.Cellf(81, 5, "%d - %s", hymnClosing.Id, hymnClosing.Name.String)
+	pdfL.Cellf(81, 5, "%s - %s", hymnClosing.Id, hymnClosing.Name.String)
 	pdfL.Cell(20, 5, "")
 	pdfL.Cell(38, 5, "Closing Hymn:")
-	pdfL.Cellf(0, 5, "%d - %s", hymnClosing.Id, hymnClosing.Name.String)
+	pdfL.Cellf(0, 5, "%s - %s", hymnClosing.Id, hymnClosing.Name.String)
 	pdfP.Ln(5)
 	pdfL.Ln(5)
 	pdfP.Cell(4, 5, "")

@@ -1,0 +1,1 @@
+alter table default_calling add column even_hour boolean default true;
