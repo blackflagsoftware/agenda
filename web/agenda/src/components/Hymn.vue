@@ -22,13 +22,13 @@ export default {
 	},
 	methods: {
 		onChange: function() {
-			this.$emit("hymn-number-out", this.hymnNumber.toString())
+			this.$emit("hymn-number-out", this.hymnNumber)
 		}
 	},
 	watch: {
 		hymnNumberIn: {
 			handler(newItem, oldItem) {
-				this.hymnNumber = Number(newItem)
+				this.hymnNumber = newItem
 			},
 			immediate: true
 		}

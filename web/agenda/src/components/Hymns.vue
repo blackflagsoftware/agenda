@@ -26,9 +26,9 @@ export default {
 	name: "Hymn",
 	data() {
 		return {
-			opening: 0,
-			sacrament: 0,
-			closing: 0,
+			opening: "",
+			sacrament: "",
+			closing: "",
 			items: []
 		}
 	},
