@@ -8,3 +8,5 @@ tools/migration/migration
 .DS_Store
 
 data/agenda.sql.bak
+data/credentials.json
+data/token.json

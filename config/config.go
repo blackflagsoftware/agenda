@@ -27,6 +27,8 @@ var (
 	StorageSQL        = true
 	SqlitePath        = GetEnvOrDefault("AGENDA_SQLITE_PATH", "")
 	DocumentDir       = GetEnvOrDefault("AGENDA_DOCUMENT_DIR", "./documents")
+	GoogleSheet       = GetEnvOrDefault("AGENDA_GOOGLE_SHEET", "")
+	CredPath          = GetEnvOrDefault("AGENDA_CREDENTIALS_PATH", "")
 )
 
 func init() {

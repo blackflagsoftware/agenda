@@ -3,12 +3,15 @@ package agenda
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/blackflagsoftware/agenda/config"
 	ae "github.com/blackflagsoftware/agenda/internal/api_error"
 	a "github.com/blackflagsoftware/agenda/internal/audit"
+	"github.com/blackflagsoftware/agenda/internal/thirdparty/hymn"
+	h "github.com/blackflagsoftware/agenda/internal/thirdparty/hymn"
 	"github.com/blackflagsoftware/agenda/internal/util"
 	ann "github.com/blackflagsoftware/agenda/internal/v1/announcement"
 	bis "github.com/blackflagsoftware/agenda/internal/v1/bishopbusiness"
@@ -21,6 +24,7 @@ import (
 	rel "github.com/blackflagsoftware/agenda/internal/v1/wardbusinessrel"
 	sus "github.com/blackflagsoftware/agenda/internal/v1/wardbusinesssus"
 	"github.com/jung-kurt/gofpdf"
+	"gopkg.in/guregu/null.v3"
 )
 
 const FONT = "helvetica"
@@ -40,6 +44,7 @@ type (
 	ManagerAgenda struct {
 		dataAgenda  DataAgendaAdapter
 		auditWriter a.AuditAdapter
+		hymnSheet   h.HymnAdapter
 	}
 )
 
@@ -50,7 +55,8 @@ var (
 func NewManagerAgenda(cage DataAgendaAdapter) *ManagerAgenda {
 	qrCodes = []util.QrImage{}
 	aw := a.AuditInit()
-	return &ManagerAgenda{dataAgenda: cage, auditWriter: aw}
+	hs := hymn.NewHymnAdapter()
+	return &ManagerAgenda{dataAgenda: cage, auditWriter: aw, hymnSheet: hs}
 }
 
 func (m *ManagerAgenda) Get(age *Agenda) error {
@@ -71,6 +77,29 @@ func (m *ManagerAgenda) Post(age *Agenda) error {
 			return m.dataAgenda.Read(age)
 		}
 		return err
+	}
+	sheet, err := m.hymnSheet.LookupSheet(age.Date)
+	if err != nil {
+		return ae.NewApiError(http.StatusInternalServerError, "Hymn Sheet", "Unable to retrieve hymn sheet: "+err.Error(), false, nil)
+	}
+	age.OpeningHymn.Scan(sheet.Opening)
+	age.SacramentHymn.Scan(sheet.Sacrament)
+	age.ClosingHymn.Scan(sheet.Closing)
+	if sheet.Intermediate != "" {
+		speakerType := "Hymn"
+		if _, err := strconv.ParseInt(sheet.Intermediate, 10, 64); err != nil {
+			speakerType = "Musical Number"
+		}
+		ss := spe.InitStorage()
+		sm := spe.NewManagerSpeaker(ss)
+		if err := sm.Post(&spe.Speaker{
+			Date:        null.StringFrom(age.Date),
+			Position:    null.StringFrom("3"),
+			SpeakerType: null.StringFrom(speakerType),
+			Name:        null.StringFrom(sheet.Intermediate),
+		}); err != nil {
+			fmt.Println("Post: error creating intermediate speaker", err)
+		}
 	}
 	if err := m.dataAgenda.Create(age); err != nil {
 		return nil
