@@ -1,4 +1,4 @@
-FROM golang:1.20.5-bullseye AS builder
+FROM golang:1.23.10-bullseye AS builder
 RUN apt-get update && apt-get upgrade -y
 WORKDIR /build
 COPY . .
