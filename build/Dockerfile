@@ -8,6 +8,7 @@ RUN go clean --modcache \
 FROM debian:bullseye-slim
 RUN apt-get update \
 	&& apt-get upgrade -y \
+	&& apt-get install -y ca-certificates \
 	&& useradd -ms /bin/bash -u 1000 bfs \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
