@@ -602,7 +602,6 @@ func (m *ManagerAgenda) printSacrament(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr 
 	pdf.Ln(2)
 	pdf.CellFormat(0, 5, HL, "", 1, "BC", false, 0, "")
 	pdf.Ln(2)
-	return
 }
 
 func (m *ManagerAgenda) printProgram(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *hym.ManagerHymn, evenHour bool) {
@@ -694,7 +693,6 @@ func (m *ManagerAgenda) printClosing(pdf *gofpdf.Fpdf, agenda *Agenda, hymMgr *h
 	pdf.SetFont(FONT, "B", 12)
 	pdf.Cell(0, 5, agenda.Benediction.String)
 	pdf.Ln(12)
-	return
 }
 
 func (m *ManagerAgenda) printPrayers(pdf *gofpdf.Fpdf) {
@@ -987,7 +985,6 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	}
 	hymnSacrament := hym.Hymn{Id: agenda.SacramentHymn.String}
 	if err := hymMgr.Get(&hymnSacrament); err != nil {
-		fmt.Println("printProgramProgram: getting sacrament hymn")
 		return
 	}
 	pdfP.Cell(4, 5, "")
@@ -1047,7 +1044,6 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 		speMgr := spe.NewManagerSpeaker(speStor)
 		speakers := []spe.Speaker{}
 		if _, err := speMgr.Search(&speakers, spe.SpeakerParam{Param: util.Param{Search: []util.ParamSearch{{Column: "date", Value: agenda.Date, Compare: "="}}}}); err != nil {
-			fmt.Println("printProgramProgram: getting speakers")
 			return
 		}
 		for _, s := range speakers {
@@ -1062,7 +1058,6 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 				// id, _ := strconv.Atoi(s.Name.String)
 				hymn = hym.Hymn{Id: s.Name.String}
 				if err := hymMgr.Get(&hymn); err != nil {
-					fmt.Println("printProgramProgram: getting hymn")
 					return
 				}
 				speakerValue = fmt.Sprintf("%s - %s", hymn.Id, hymn.Name.String)
@@ -1092,7 +1087,6 @@ func (m *ManagerAgenda) printProgramProgram(pdfP *gofpdf.Fpdf, pdfL *gofpdf.Fpdf
 	}
 	hymnClosing := hym.Hymn{Id: agenda.ClosingHymn.String}
 	if err := hymMgr.Get(&hymnClosing); err != nil {
-		fmt.Println("printProgramProgram: getting closing hymn")
 		return
 	}
 	pdfP.Ln(2)

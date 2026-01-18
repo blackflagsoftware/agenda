@@ -76,7 +76,7 @@ func (g *GoogleSheet) LookupSheet(dateStr string) (HymnSheet, error) {
 
 	hymnSheet := HymnSheet{}
 	for i, row := range rows {
-		if row[0] == shortDate {
+		if len(row) > 0 && row[0] == shortDate {
 			hymnSheet.Opening = parseTitle(rows[i+1][2], false)
 			hymnSheet.Sacrament = parseTitle(rows[i+1][4], false)
 			hymnSheet.Intermediate = parseTitle(rows[i+1][6], true)
